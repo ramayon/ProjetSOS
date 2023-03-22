@@ -28,11 +28,6 @@ int deadMob=0;
 int deadMobY=0;
 unsigned int menu=0;
 
-void choiceMenu()
-{
-	
-}
-
 void testCollision()
 {
 	struct mobile *tmp=mob->first;
@@ -223,7 +218,6 @@ void game(char map[][NbCol]) //Fonction gérant toutes les mécaniques du jeu
 		}
 		FIRE=false;
 	}
-	choiceMenu(); //afficher le menu
 	//readValue(thorn);		//afficher les valeurs des projectiles
 	drawMap(map);			//afficher la carte
 	glutKeyboardFunc(Keyboard);		// Fonction de glut gérant le clavier
