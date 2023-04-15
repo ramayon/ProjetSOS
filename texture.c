@@ -9,34 +9,38 @@
 #include "texture.h"
 
 // Texture IDs array
-#define NUM_TEXTURES 6
+
 GLuint textureIds[NUM_TEXTURES];
 
 // Initialize and load the textures
 void initTextures()
 {
-    const char *textureFiles[NUM_TEXTURES] = {"concrete.bmp", "water.bmp","grass.bmp","wood.bmp","green.snail.bmp"};
-
+    const char *textureFiles[NUM_TEXTURES] = {"concrete.bmp", "water.bmp","grass.bmp","wood.bmp","Green.snail.left.png","Green.snail.up.png","Green.snail.down.png","Green.snail.right.png","car1.png","car2.png","car3.png","car4.png"};
     for (int i = 0; i < NUM_TEXTURES; i++)
     {
-        FIBITMAP *image = FreeImage_Load(FIF_BMP, textureFiles[i], BMP_DEFAULT);
-        if (image == NULL)
-        {
-            fprintf(stderr, "Failed to load texture image: %s\n", textureFiles[i]);
-            return;
-        }
-        glGenTextures(1, &textureIds[i]);
-        glBindTexture(GL_TEXTURE_2D, textureIds[i]);
-        int width = FreeImage_GetWidth(image);
-        int height = FreeImage_GetHeight(image);
-        GLubyte *texels = (GLubyte *)FreeImage_GetBits(image);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, texels);
+    FREE_IMAGE_FORMAT format = FreeImage_GetFileType(textureFiles[i], 0);
+    FIBITMAP *image = FreeImage_Load(format, textureFiles[i],0);
+    if (image == NULL)
+    {
+        fprintf(stderr, "Failed to load texture image: %s\n", textureFiles[i]);
+        return;
+    }
 
-        // Set texture parameters
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    FIBITMAP *image32Bit = FreeImage_ConvertTo32Bits(image);
 
-        // Free the image data
-        FreeImage_Unload(image);
+    glGenTextures(1, &textureIds[i]);
+    glBindTexture(GL_TEXTURE_2D, textureIds[i]);
+    int width = FreeImage_GetWidth(image32Bit);
+    int height = FreeImage_GetHeight(image32Bit);
+    GLubyte *texels = (GLubyte *)FreeImage_GetBits(image32Bit);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, texels);
+
+    // Set texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // Free the image data
+    FreeImage_Unload(image32Bit);
+    FreeImage_Unload(image);
     }
 }

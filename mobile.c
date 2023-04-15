@@ -25,14 +25,18 @@ void readValue(struct mobileChain *mob)
     }
 }
 
-void pushmChain(struct mobileChain *mob,int j, int k, int l)
+void pushmChain(struct mobileChain *mob,int j, int k, int l,int m,int n)
 {
 	struct mobile *newMob=malloc(sizeof(struct mobile));
 	newMob->value=j+1;
 	newMob->y=k;
 	newMob->x=l;
     newMob->translation=0;
+    newMob->speed=0.05+(float)rand()/(float)(RAND_MAX/(0.2-0.05)); //vitesse aléatoire entre 0.05 et 0.2
+    newMob->angle=m;
     newMob->alive=true;
+    newMob->shoot=false;
+    newMob->shootAngle=n;
 	newMob->next=mob->first;
     newMob->prev=NULL;
     if(mob->first!=NULL)
@@ -86,12 +90,12 @@ int mobileElem(struct mobileChain *mob)
     {
         for(i=0;i<2;i++,k--,j++)
         {		
-            pushmChain(mob,j,k,24);
+            pushmChain(mob,j,k,24,0,0);
         }
         k--;
         for(i=0;i<2;i++,k--,j++)
         {
-            pushmChain(mob,j,k,1);
+            pushmChain(mob,j,k,1,0,0);
         }
         k--;
     }
@@ -100,35 +104,27 @@ int mobileElem(struct mobileChain *mob)
 
 int mobileElem2(struct mobileChain *wood)
 {
-    int i,j=0;
+    int j=0;
     int k=10;
     int l=24;
     int m=1;
-    while(j<20)
+    while(j<4)
     {
-        for(i=0;i<5;i++,j++,l--)
-        {		
-            pushmChain(wood,j,k,l);
-        }
+        pushmChain(wood,j,k,l,0,0);
+        j++;
         k--;
-        for(i=0;i<5;i++,j++,m++)
-        {
-            pushmChain(wood,j,k,m);
-        }
+        pushmChain(wood,j,k,m,0,0);
+        j++;
         k--;
     }
     k--;
-    while(j<40)
+    while(j<8)
     {
-        for(i=0;i<5;i++,j++,l--)
-        {		
-            pushmChain(wood,j,k,l);
-        }
+        pushmChain(wood,j,k,l,0,0);
+        j++;
         k--;
-        for(i=0;i<5;i++,j++,m++)
-        {
-            pushmChain(wood,j,k,m);
-        }
+        pushmChain(wood,j,k,m,0,0);
+        j++;
         k--;
     }
     return 1;

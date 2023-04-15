@@ -21,12 +21,66 @@ bool LEFT = false;
 bool RIGHT = false;
 bool DOWN = false;
 bool FIRE = false;
-bool Pause = false;
-unsigned int countThorn=0;
+bool PAUSE = false;
 int mobileGeneration=0;
 int deadMob=0;
 int deadMobY=0;
+int deadMobAngle=0;
 unsigned int menu=0;
+
+void testCollisionPShoot()
+{
+	struct mobile *tmp=mob->first;
+	while(tmp!=NULL)
+	{
+		struct mobile *tmp0=playerShoot->first;
+		while(tmp0!=NULL)
+		{
+			if(tmp->alive==true)
+			{
+				if(tmp0->alive==true)
+				{
+					if(tmp0->angle==90||tmp0->angle==270) //haut bas
+					{
+						if((tmp0->x+0.5)>(tmp->x+tmp->translation)&&(tmp0->x+0.5)<(tmp->x+tmp->translation+1)&&(tmp0->y+0.3+tmp0->translation)<tmp->y+1&&(tmp0->y+0.3+tmp0->translation)>tmp->y)
+						{
+							tmp0->alive=false;
+							tmp->alive=false;
+							deadMobY=tmp->y;
+							deadMob=tmp->value;
+							deadMobAngle=tmp->angle;
+							Player->score+=100;
+							printf("score: %d\n",Player->score);
+						}
+						else if(tmp0->y+tmp0->translation<1||tmp0->y+tmp0->translation>24)
+						{
+							tmp0->alive=false;
+						}
+					}
+					else if(tmp0->angle==0||tmp0->angle==180) //gauche droite
+					{
+						if((tmp0->x+0.3+tmp0->translation)>(tmp->x+tmp->translation)&&(tmp0->x+0.3+tmp0->translation)<(tmp->x+tmp->translation+1)&&(tmp0->y+0.5)<tmp->y+1&&(tmp0->y+0.5)>tmp->y)
+						{
+							tmp0->alive=false;
+							tmp->alive=false;
+							deadMobY=tmp->y;
+							deadMob=tmp->value;
+							deadMobAngle=tmp->angle;
+							Player->score+=100;
+							printf("score: %d\n",Player->score);
+						}
+						else if(tmp0->x+tmp0->translation<1||tmp0->x+tmp0->translation>24)
+						{
+							tmp0->alive=false;
+						}
+					}
+				}
+			}
+			tmp0=tmp0->next;
+		}
+		tmp=tmp->next;
+	}
+}
 
 void testCollision()
 {
@@ -38,7 +92,7 @@ void testCollision()
 			if(Player->x<tmp->x+tmp->translation&&tmp->x+tmp->translation<Player->x+0.6&& Player->y==tmp->y)
 			{
 				Player->vie-=1;
-				Player->y=25;
+				Player->y=24;
 				Player->x=12;
 			}
 		}
@@ -47,11 +101,35 @@ void testCollision()
 			if(Player->x<tmp->x+tmp->translation&&tmp->x+tmp->translation<Player->x+0.6&& Player->y==tmp->y)
 			{
 				Player->vie-=1;
-				Player->y=25;
+				Player->y=24;
 				Player->x=12;
 			}
 		}
-		tmp=tmp->next;
+		if (mobShoot->size > 0)
+		{
+			struct mobile *tmp3=mobShoot->first;
+			while(tmp3!=NULL)
+			{
+				if(Player->x<tmp3->x+tmp3->translation&&tmp3->x+tmp3->translation<Player->x+0.6&& Player->y==tmp3->y)
+				{
+					Player->vie-=1;
+					Player->y=24;
+					Player->x=12;
+					tmp3->alive=false;
+					struct mobile *mobShooter = mob->first;
+            		while (mobShooter!=NULL) 
+					{
+                		if (mobShooter->y==tmp3->y) 
+						{
+                    		mobShooter->shoot=false;
+                		}
+                		mobShooter=mobShooter->next;
+            		}
+				}
+				tmp3=tmp3->next;
+			}
+		}
+	tmp=tmp->next;
 	}
 	if(Player->vie==0)
 	{
@@ -59,58 +137,53 @@ void testCollision()
 	}
 }
 
-void testCollisionThorn()
+void mobAutoShoot() 
 {
-	struct mobile *tmp=mob->first;
-	while(tmp!=NULL)
+	//Tir des mobiles si le joueur est en vue
+    struct mobile *tmp = mob->first;
+    while (tmp != NULL) 
 	{
-		if(tmp->alive==true)
+        if (tmp->alive == true) 
 		{
-			for(int i=0;i<5;i++)
+            if (tmp->y==Player->y&&tmp->shoot!=true)
 			{
-				if(Thorn[i].alive==true)
+				int ShootAngle=0;
+				if((tmp->x+tmp->translation)<Player->x)
 				{
-					if(Thorn[i].angle==90||Thorn[i].angle==270) //haut bas
-					{
-						if((Thorn[i].x+0.5)>(tmp->x+tmp->translation)&&(Thorn[i].x+0.5)<(tmp->x+tmp->translation+1)&&(Thorn[i].y+0.3+Thorn[i].speed)<tmp->y+1&&(Thorn[i].y+0.3+Thorn[i].speed)>tmp->y)
-						{
-							Thorn[i].alive=false;
-							tmp->alive=false;
-							deadMobY=tmp->y;
-							deadMob=tmp->value;
-							countThorn--;
-							Player->score+=100;
-							printf("score: %d\n",Player->score);
-						}
-						else if(Thorn[i].y+Thorn[i].speed<1||Thorn[i].y+Thorn[i].speed>24)
-						{
-							Thorn[i].alive=false;
-							countThorn--;
-						}
-					}
-					else if(Thorn[i].angle==0||Thorn[i].angle==180) //gauche droite
-					{
-						if((Thorn[i].x+0.3+Thorn[i].speed)>(tmp->x+tmp->translation)&&(Thorn[i].x+0.3+Thorn[i].speed)<(tmp->x+tmp->translation+1)&&(Thorn[i].y+0.5)<tmp->y+1&&(Thorn[i].y+0.5)>tmp->y)
-						{
-							Thorn[i].alive=false;
-							tmp->alive=false;
-							deadMobY=tmp->y;
-							deadMob=tmp->value;
-							countThorn--;
-							Player->score+=100;
-							printf("score: %d\n",Player->score);
-						}
-						else if(Thorn[i].x+Thorn[i].speed<1||Thorn[i].x+Thorn[i].speed>24)
-						{
-							Thorn[i].alive=false;
-							countThorn--;
-						}
-					}
+					ShootAngle=1;
 				}
-			}
-		}
-		tmp=tmp->next;
-	}
+				else if((tmp->x+tmp->translation)>Player->x)
+				{
+					ShootAngle=-1;
+				}
+                pushmChain(mobShoot,9,tmp->y,tmp->x+tmp->translation,tmp->angle,ShootAngle);
+				tmp->shoot=true;
+            }
+        }
+        tmp = tmp->next;
+    }
+	//Destruction du tir s'il atteint les limites de la carte
+	struct mobile *tmp3=mobShoot->first;
+    while (tmp3!=NULL) 
+	{
+        if (tmp3->alive==true) 
+		{
+            if (tmp3->x+tmp3->translation<1||tmp3->x+tmp3->translation>25) 
+			{
+                tmp3->alive=false;
+				struct mobile *mobShooter = mob->first;
+				while (mobShooter!=NULL) 
+				{
+					if (mobShooter->y==tmp3->y) 
+					{
+						mobShooter->shoot=false;
+					}
+					mobShooter=mobShooter->next;
+				}
+            } 
+        }
+        tmp3=tmp3->next;
+    }
 }
 
 void mouse(int bouton,int etat,int x,int y) 
@@ -178,16 +251,6 @@ void Keyboard(unsigned char key, int x, int y)  // fonction allant gérer les in
 		case'a':
 			FIRE = true;
 			break;
-		case'p':
-			Pause=true;
-			while(Pause==true)
-			{
-				switch(key)
-				{
-					case'p':
-					Pause=false;
-				}
-			}
 	}	
 }
 
@@ -197,25 +260,16 @@ void game(char map[][NbCol]) //Fonction gérant toutes les mécaniques du jeu
 	{
 		mob=mkmobileChaine();
 		wood=mkmobileChaine();
+		playerShoot=mkmobileChaine();
+		mobShoot=mkmobileChaine();
 		mobileElem2(wood);
 		mobileElem(mob);	//créer les mobiles
 		mobileGeneration=1;
 	}
 
-	if(FIRE==true&&countThorn<5)
+	if(FIRE==true)
 	{
-		countThorn++;
-		for(int i=0;i<countThorn;i++)
-		{
-			if(Thorn[i].alive==false)
-			{
-				Thorn[i].x=Player->x;
-				Thorn[i].y=Player->y;
-				Thorn[i].angle=Player->angle;
-				Thorn[i].speed=0.4;
-				Thorn[i].alive=true;
-			}
-		}
+		pushmChain(playerShoot,8,Player->y,Player->x,Player->angle,0);
 		FIRE=false;
 	}
 	//readValue(thorn);		//afficher les valeurs des projectiles
@@ -247,18 +301,21 @@ void game(char map[][NbCol]) //Fonction gérant toutes les mécaniques du jeu
         moveDown(map);		//va se déplacer vers la droite si on apppuie sur s
 		DOWN = false;
 	}
-	testCollision(mob);		//test si le joueur est en collision avec un mobile
-	testCollisionThorn(mob); //test si un véhicule est en collision avec un projectile
+	mobAutoShoot();			//les mobiles tirent sur le joueur
+	testCollision();		//test si le joueur est en collision avec un mobile
+	testCollisionPShoot(); //test si un véhicule est en collision avec un projectile
 	popmChain(mob);			//supprime les mobiles qui sont morts
+	popmChain(mobShoot);	//supprime les projectiles qui sont morts
+	popmChain(playerShoot);//supprime les projectiles du joueur qui sont morts
 	if(deadMob!=0)
 	{
 		if(deadMob==1||deadMob==2||deadMob==5||deadMob==6)
 		{
-			pushmChain(mob,deadMob-1,deadMobY,24);	//réanime les mobiles qui sont morts
+			pushmChain(mob,deadMob-1,deadMobY,24,0,0);	//réanime les mobiles qui sont morts
 		}
 		else if(deadMob==3||deadMob==4||deadMob==7||deadMob==8)
 		{
-			pushmChain(mob,deadMob-1,deadMobY,1);	//réanime les mobiles qui sont morts
+			pushmChain(mob,deadMob-1,deadMobY,1,0,0);	//réanime les mobiles qui sont morts
 		}
 		
 		deadMob=0;

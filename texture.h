@@ -10,7 +10,7 @@
 #include <string.h>
 #include <math.h>
 
-#define NUM_TEXTURES 6
+#define NUM_TEXTURES 12
 extern GLuint textureIds[NUM_TEXTURES];
 void initTextures();
 

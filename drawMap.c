@@ -41,178 +41,180 @@ void tostring(char str[], int num)
 
 void timer(int)
 {
-	int i;
 	glutPostRedisplay();
 	glutTimerFunc(2400/60, timer, 0);
-	for(i=0;i<5;i++)
+	if(mob!=NULL)
 	{
-		if(Thorn[i].alive==true)
+		struct mobile *temp=mob->first;
+		while(temp!=NULL)
 		{
-			if(Thorn[i].angle==0||Thorn[i].angle==90)
+			float *tp=&temp->translation;
+			if(temp->alive==true)
 			{
-				Thorn[i].speed-=0.2;
+				if(temp->value==1||temp->value==2||temp->value==5||temp->value==6)
+				{
+					if(temp->translation>-25)
+					{
+						*tp-=temp->speed;
+					}
+					else if(temp->translation<-25)
+					{
+						*tp+=25;
+					}
+				}
+				else if(temp->value==3||temp->value==4||temp->value==7||temp->value==8)
+				{
+					if(temp->translation<25)
+					{
+						*tp+=temp->speed;
+					}
+					else if(temp->translation>1)
+					{
+						*tp-=25;
+					}
+				}
 			}
-			else if(Thorn[i].angle==180||Thorn[i].angle==270)
-			{
-				Thorn[i].speed+=0.2;
-			}
+			temp=temp->next;
 		}
 	}
-	struct mobile *temp=mob->first;
-	while(temp!=NULL)
+	if(mobShoot!=NULL)
 	{
-		float *tp=&temp->translation;
-		if(temp->alive==true)
+		struct mobile *temp3=mobShoot->first;
+		while(temp3!=NULL)
 		{
-			if(temp->value==2||temp->value==6)
+			float *tp3=&temp3->translation;
+			if(temp3->shootAngle==(-1))
 			{
-				if(temp->translation>-23)
-				{
-					*tp-=0.3;
-				}
-				else if(temp->translation<-23)
-				{
-					*tp+=23;
-				}
+				*tp3-=0.5;
 			}
-			else if(temp->value==1||temp->value==5)
+			else if(temp3->shootAngle==1)
 			{
-				if(temp->translation>-23)
-				{
-					*tp-=0.5;
-				}
-				else if(temp->translation<=-23)
-				{
-					*tp+=23;
-				}
+				*tp3+=0.5;
 			}
-			else if(temp->value==3||temp->value==7)
-			{
-				if(temp->translation<23)
-				{
-					*tp+=0.3;
-				}
-				else if(temp->translation>1)
-				{
-					*tp-=23;
-				}
-			}
-			else if(temp->value==4||temp->value==8)
-			{
-				if(temp->translation<23)
-				{
-					*tp+=0.5;
-				}
-				else if(temp->translation>1)
-				{
-					*tp-=23;
-				}
-			}
+			temp3=temp3->next;
 		}
-		temp=temp->next;
 	}
-	struct mobile *temp2=wood->first;
-	while(temp2!=NULL)
+	if(playerShoot!=NULL)
 	{
-		float *tp=&temp2->translation;
-		float *tp2=&temp2->x;
+		struct mobile *temp0=playerShoot->first;
+		while(temp0!=NULL)
+		{
+			float *tp0=&temp0->translation;
+			if(temp0->angle==0||temp0->angle==90)
+			{
+				*tp0-=0.3;
+			}
+			else if(temp0->angle==180||temp0->angle==270)
+			{
+				*tp0+=0.3;
+			}
+			temp0=temp0->next;
+		}
+	}
+	if(wood!=NULL)
+	{
+		struct mobile *temp2=wood->first;
+		while(temp2!=NULL)
+		{
+			float *tp=&temp2->translation;
+			float *tp2=&temp2->x;
 
-		if(temp2->value<=5||(temp2->value>10&&temp2->value<=15))
-		{
-			if((temp2->x+temp2->translation)>1)
+			if(temp2->value==1||temp2->value==3||temp2->value==5||temp2->value==7)
 			{
-				*tp-=0.1;
+				if((temp2->x+temp2->translation)>-5)
+				{
+					*tp-=temp2->speed;
+				}
+				else
+				{
+					*tp=0;
+					*tp2=26;
+				}
 			}
-			else
+			else if(temp2->value==2||temp2->value==4||temp2->value==6||temp2->value==8)
 			{
-				*tp=0;
-				*tp2=24;
+				if((temp2->x+temp2->translation)<26)
+				{
+					*tp+=temp2->speed;
+				}
+				else
+				{
+					*tp=0;
+					*tp2=-5;
+				}
 			}
+		temp2=temp2->next;
 		}
-		else if((temp2->value>5&&temp2->value<=10)||(temp2->value>15&&temp2->value<=20))
-		{
-			if((temp2->x+temp2->translation)<24)
-			{
-				*tp+=0.1;
-			}
-			else
-			{
-				*tp=0;
-				*tp2=1;
-			}
-		}
-		if((temp2->value>20&&temp2->value<=25)||(temp2->value>30&&temp2->value<=35))
-		{
-			if((temp2->x+temp2->translation)>1)
-			{
-				*tp-=0.1;
-			}
-			else
-			{
-				*tp=0;
-				*tp2=24;
-			}
-		}
-		else if((temp2->value>25&&temp2->value<=30)||(temp2->value>35&&temp2->value<=40))
-		{
-			if((temp2->x+temp2->translation)<24)
-			{
-				*tp+=0.1;
-			}
-			else
-			{
-				*tp=0;
-				*tp2=1;
-			}
-		}
-	temp2=temp2->next;
 	}
-	/*switch(stateR)
-	{
-		case 1:
-			if(x_fromR_position>-23)
-			{
-				x_fromR_position-=0.2;
-			}
-			else
-			{
-				stateR=2;
-			}
-			break;
-		case 2:
-			if(x_fromR_position<-23)
-			{
-				x_fromR_position+=23;
-			}
-			else
-			{
-				stateR=1;
-			}
-			break;
-	}
-	switch(stateL)
-	{
-		case 1:
-			if(x_fromL_position<23)
-			{
-				x_fromL_position+=0.2;
-			}
-			else
-			{
-				stateL=2;
-			}
-			break;
-		case 2:
-			if(x_fromL_position>1)
-			{
-				x_fromL_position-=23;
-			}
-			else
-			{
-				stateL=1;
-			}
-			break;
-	}*/
+}
+
+void drawShooting(struct mobile *temp, float translation)
+{
+    while (temp != NULL)
+    {
+        glPushMatrix();
+        if (temp->angle == 0 || temp->angle == 180)
+        {
+            glTranslatef(temp->translation, 0.0, 0.0);
+        }
+        else if (temp->angle == 90 || temp->angle == 270)
+        {
+            glTranslatef(0.0, temp->translation, 0.0);
+        }
+
+        glBegin(GL_LINES);
+        glColor3d(0.0, 0.0, 0.0); // Couleur des tirs noir
+
+        if (temp->angle == 0)
+        {
+            glVertex2f(temp->x + 0.5, temp->y + 0.5);
+            glVertex2f(temp->x + 0.2, temp->y + 0.5);
+        }
+        else if (temp->angle == 90)
+        {
+            glVertex2f(temp->x + 0.5, temp->y + 0.5);
+            glVertex2f(temp->x + 0.5, temp->y + 0.2);
+        }
+        else if (temp->angle == 180)
+        {
+            glVertex2f(temp->x + 0.5, temp->y + 0.5);
+            glVertex2f(temp->x + 0.8, temp->y + 0.5);
+        }
+        else if (temp->angle == 270)
+        {
+            glVertex2f(temp->x + 0.5, temp->y + 0.5);
+            glVertex2f(temp->x + 0.5, temp->y + 0.8);
+        }
+
+        glEnd();
+        glPopMatrix();
+
+        temp = temp->next;
+    }
+}
+
+void drawObject(int x, int y, int tile, int size, float translation)
+{
+	glPushMatrix();
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textureIds[tile]);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    glTranslatef(translation, 0.0, 0.0);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 1.0f); // sommet en bas à gauche
+        glVertex2f(x, y);
+        glTexCoord2f(0.0f, 0.0f); // sommet en haut à gauche
+        glVertex2f(x, y + 1);
+        glTexCoord2f(1.0f, 0.0f); // sommet en haut à droite
+        glVertex2f(x + size, y + 1);
+        glTexCoord2f(1.0f, 1.0f); // sommet en bas à droite
+        glVertex2f(x + size, y);
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
+    glPopMatrix();
 }
 
 void drawBitmapText(char *string,float x,float y) 
@@ -284,112 +286,52 @@ void drawMap(char map[][NbCol])			// fonction qui affiche TOUT
 			// Commence l'affichage
 			// Bind the texture
 			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, textureIds[0]);
-			glBegin(GL_QUADS);
-			glColor3d(0.5, 0.5, 0.5); // Couleur grise
 			// Parcourt toutes les cellules de la matrice 
 			for(i=0; i<NbCol; i++)
 			for(j=0; j<NbLin; j++)
 				// Si c'est un mur, on dessine un carré 
 				if(map[i][j] == '0'||map[i][j] == '4'||map[i][j] == '5')
 				{   
-					// Place les points du carré 
-					glTexCoord2f(0.0f, 0.0f); // sommet en bas à gauche
-					glVertex2d(i, j); 
-					glTexCoord2f(0.0f, 1.0f); // sommet en haut à gauche
-					glVertex2d(i, j+1);
-					glTexCoord2f(1.0f, 1.0f); // sommet en haut à droite
-					glVertex2d(i+1, j+1);
-					glTexCoord2f(1.0f, 0.0f); // sommet en bas à droite
-					glVertex2d(i+1, j);
-					glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+					drawObject(i,j,0,1,0);
 				}
-			glEnd();
-			glDisable(GL_TEXTURE_2D);
-			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, textureIds[1]);
-			glBegin(GL_QUADS);
-			glColor3d(0.4, 0.6, 0.6); // Couleur bleue
-			// Parcourt toutes les cellules de la matrice 
-			for(i=0; i<NbCol; i++)
-			for(j=0; j<NbLin; j++)
 				// Si c'est de l'eau, on dessine un carré 
-				if(map[i][j] == '3')
+				else if(map[i][j] == '3')
 				{   
-					// Place les points du carré 
-					glTexCoord2f(0.0f, 0.0f); // sommet en bas à gauche
-					glVertex2d(i, j); 
-					glTexCoord2f(0.0f, 1.0f); // sommet en haut à gauche
-					glVertex2d(i, j+1);
-					glTexCoord2f(1.0f, 1.0f); // sommet en haut à droite
-					glVertex2d(i+1, j+1);
-					glTexCoord2f(1.0f, 0.0f); // sommet en bas à droite
-					glVertex2d(i+1, j);
-					glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+					drawObject(i,j,1,1,0);
 				}
-			glEnd();
-			glDisable(GL_TEXTURE_2D);
-			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, textureIds[2]);
-			glBegin(GL_QUADS);
-			glColor3d(0.2, 0.7, 0.2); // Couleur verte
-			// Parcourt toutes les cellules de la matrice 
-			for(i=0; i<NbCol; i++)
-			for(j=0; j<NbLin; j++)
-				// Si c'est de l'herbe, on dessine un carré 
-				if(map[i][j] == '2'||map[i][j] == '6')
+				// Si c'est de l'herbe, on dessine un carré
+				else if(map[i][j] == '2'||map[i][j] == '6')
 				{   
-					// Place les points du carré 
-					glTexCoord2f(0.0f, 0.0f); // sommet en bas à gauche
-					glVertex2d(i, j); 
-					glTexCoord2f(0.0f, 1.0f); // sommet en haut à gauche
-					glVertex2d(i, j+1);
-					glTexCoord2f(1.0f, 1.0f); // sommet en haut à droite
-					glVertex2d(i+1, j+1);
-					glTexCoord2f(1.0f, 0.0f); // sommet en bas à droite
-					glVertex2d(i+1, j);
-					glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+					drawObject(i,j,2,1,0);
 				}
 			glEnd();
 			glDisable(GL_TEXTURE_2D);
 			glBegin(GL_QUADS);
-			glColor3d(0.7, 0.7, 0.0); // Couleur jaune
 			// Parcourt toutes les cellules de la matrice 
 			for(i=0; i<NbCol; i++)
 			for(j=0; j<NbLin; j++)
 				// Si c'est une ligne, on dessine une ligne
 				if(map[i][j] == '4')
 				{   
+					glColor3d(0.7, 0.7, 0.0); // Couleur jaune
 					// Place les points du carré 
-					glVertex2f(i, j+0.25); 
-					glVertex2f(i, j+0.75); 
-					glVertex2f(i+0.75, j+0.75); 
-					glVertex2f(i+0.75, j+0.25);
+					glVertex2f(i+0.5, j+0.25); 
+					glVertex2f(i+0.5, j+0.75); 
+					glVertex2f(i+1.25, j+0.75); 
+					glVertex2f(i+1.25, j+0.25);
 				}
-			glEnd();
-			glBegin(GL_QUADS);
-			glColor3d(1.0, 1.0, 1.0); // Couleur blanche
-			// Parcourt toutes les cellules de la matrice 
-			for(i=0; i<NbCol; i++)
-			for(j=0; j<NbLin; j++)
-				// Si c'est une ligne, on dessine une ligne
-				if(map[i][j] == '5')
+				else if(map[i][j] == '5')
 				{   
+					glColor3d(1.0, 1.0, 1.0); // Couleur blanche
 					// Place les points du carré 
 					glVertex2f(i, j+0.4); 
 					glVertex2f(i, j+0.6); 
 					glVertex2f(i+1, j+0.6); 
 					glVertex2f(i+1, j+0.4);
 				}
-			glEnd();
-			glBegin(GL_QUADS);
-			glColor3f(0.5, 0.5, 0.05); // Couleur brune des bords
-			// Parcourt toutes les cellules de la matrice 
-			for(i=0; i<NbCol; i++)
-			for(j=0; j<NbLin; j++)
-				// Si c'est une ligne, on dessine une ligne
-				if(map[i][j] == '#')
+				else if(map[i][j] == '#')
 				{   
+					glColor3f(0.5, 0.5, 0.05); // Couleur brune des bords
 					// Place les points du carré 
 					glVertex2d(i, j); 
 					glVertex2d(i, j+1); 
@@ -399,59 +341,26 @@ void drawMap(char map[][NbCol])			// fonction qui affiche TOUT
 			// Achève l'affichage
 			glEnd();
 			struct mobile *temp2=wood->first;
-			while(temp2!=NULL)
+			while (temp2!=NULL)
 			{
-				glPushMatrix();
-				glEnable(GL_TEXTURE_2D);
-			    glBindTexture(GL_TEXTURE_2D, textureIds[3]);
-				glTranslatef(temp2->translation,0.0,0.0);
-				glBegin(GL_QUADS);
-					glColor3d(0.5, 0.35, 0.05); // Couleur marron
-					glTexCoord2f(0.0f, 0.0f); // sommet en bas à gauche
-					glVertex2f(temp2->x, temp2->y);
-					glTexCoord2f(0.0f, 1.0f); // sommet en haut à gauche
-					glVertex2f(temp2->x, temp2->y+1);
-					glTexCoord2f(1.0f, 1.0f); // sommet en haut à droite
-					glVertex2f(temp2->x+1, temp2->y+1);
-					glTexCoord2f(1.0f, 0.0f); // sommet en bas à droite
-					glVertex2f(temp2->x+1, temp2->y);
-					glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-				glEnd();
-				glDisable(GL_TEXTURE_2D);
-				glPopMatrix();
+				drawObject(temp2->x,temp2->y,3,5,temp2->translation);
 				temp2=temp2->next;
 			}
 			if(Player->angle==0) //Gauche
 			{
-				glBegin(GL_TRIANGLES);
-				glColor3d(1.0, 0.0, 1.0); // Couleur violette
-				glVertex2f(Player->x, Player->y+0.5); 
-				glVertex2f(Player->x+1, Player->y+1); 
-				glVertex2f(Player->x+1, Player->y);
+				drawObject(Player->x,Player->y,4,1,0);
 			}
 			else if(Player->angle==90) //Haut
 			{
-				glBegin(GL_TRIANGLES);
-				glColor3d(1.0, 0.0, 1.0); // Couleur violette
-				glVertex2f(Player->x, Player->y+1); 
-				glVertex2f(Player->x+1, Player->y+1); 
-				glVertex2f(Player->x+0.5, Player->y);
+				drawObject(Player->x,Player->y,5,1,0);
 			}
 			else if(Player->angle==270) //Bas
 			{
-				glBegin(GL_TRIANGLES);
-				glColor3d(1.0, 0.0, 1.0); // Couleur violette
-				glVertex2f(Player->x, Player->y); 
-				glVertex2f(Player->x+1, Player->y); 
-				glVertex2f(Player->x+0.5, Player->y+1);
+				drawObject(Player->x,Player->y,6,1,0);
 			}
 			else if(Player->angle==180) //Droite
 			{
-				glBegin(GL_TRIANGLES);
-				glColor3d(1.0, 0.0, 1.0); // Couleur violette
-				glVertex2f(Player->x, Player->y); 
-				glVertex2f(Player->x, Player->y+1); 
-				glVertex2f(Player->x+1, Player->y+0.5);
+				drawObject(Player->x,Player->y,7,1,0);
 			}
 			glEnd();
 			//affichage mobile
@@ -460,109 +369,32 @@ void drawMap(char map[][NbCol])			// fonction qui affiche TOUT
 			{
 				if(temp->alive==true&&(temp->value==2||temp->value==6))
 				{
-				glPushMatrix();
-				glTranslatef(temp->translation,0.0,0.0);
-				glBegin(GL_QUADS);
-					glColor3d(1.0, 0.5, 0.0); // Couleur orange
-					glVertex2f(temp->x, temp->y);
-					glVertex2f(temp->x, temp->y+1);
-					glVertex2f(temp->x+1, temp->y+1);
-					glVertex2f(temp->x+1, temp->y);
-				glEnd();
-				glPopMatrix();
+					drawObject(temp->x,temp->y,9,1,temp->translation);
 				}
 				else if(temp->alive==true&&(temp->value==1||temp->value==5))
 				{
-				glPushMatrix();
-				glTranslatef(temp->translation,0.0,0.0);
-				glBegin(GL_QUADS);
-					glColor3d(1.0, 0.0, 0.0); // Couleur rouge
-					glVertex2f(temp->x, temp->y);
-					glVertex2f(temp->x, temp->y+1);
-					glVertex2f(temp->x+1, temp->y+1);
-					glVertex2f(temp->x+1, temp->y);
-				glEnd();
-				glPopMatrix();
+					drawObject(temp->x,temp->y,8,1,temp->translation);
 				}
 				else if(temp->alive==true&&(temp->value==3||temp->value==7))
 				{
-				glPushMatrix();
-				glTranslatef(temp->translation,0.0,0.0);
-				glBegin(GL_QUADS);
-					glColor3d(0.0, 0.0, 1.0); // Couleur bleu
-					glVertex2f(temp->x, temp->y);
-					glVertex2f(temp->x, temp->y+1);
-					glVertex2f(temp->x+1, temp->y+1);
-					glVertex2f(temp->x+1, temp->y);
-				glEnd();
-				glPopMatrix();
+					drawObject(temp->x,temp->y,11,1,temp->translation);
 				}
 				else if(temp->alive==true&&(temp->value==4||temp->value==8))
 				{
-				glPushMatrix();
-				glTranslatef(temp->translation,0.0,0.0);
-				glBegin(GL_QUADS);
-					glColor3d(0.0, 1.0, 0.0); // Couleur vert
-					glVertex2f(temp->x, temp->y);
-					glVertex2f(temp->x, temp->y+1);
-					glVertex2f(temp->x+1, temp->y+1);
-					glVertex2f(temp->x+1, temp->y);
-				glEnd();
-				glPopMatrix();
+					drawObject(temp->x,temp->y,10,1,temp->translation);
+				}
+				if(temp->shoot == true)
+				{
+					if(mobShoot->size>0)
+					{
+						//affichage mobShoot
+						drawShooting(mobShoot->first, 0);
+					}
 				}
 				temp=temp->next;
 			}
-			//affichage thorn
-			for(i=0;i<5;i++)
-			{
-				if(Thorn[i].alive==true)
-				{
-					if(Thorn[i].angle==0)
-					{
-						glPushMatrix();
-						glTranslatef(Thorn[i].speed,0.0,0.0);
-						glBegin(GL_LINES);
-							glColor3d(0.0, 0.0, 0.0); // Couleur noir
-							glVertex2f(Thorn[i].x+0.5, Thorn[i].y+0.5);
-							glVertex2f(Thorn[i].x+0.2, Thorn[i].y+0.5);
-						glEnd();
-						glPopMatrix();
-					}
-					else if(Thorn[i].angle==90)
-					{
-						glPushMatrix();
-						glTranslatef(0.0,Thorn[i].speed,0.0);
-						glBegin(GL_LINES);
-							glColor3d(0.0, 0.0, 0.0); // Couleur noir
-							glVertex2f(Thorn[i].x+0.5, Thorn[i].y+0.5);
-							glVertex2f(Thorn[i].x+0.5, Thorn[i].y+0.2);
-						glEnd();
-						glPopMatrix();
-					}
-					else if(Thorn[i].angle==180)
-					{
-						glPushMatrix();
-						glTranslatef(Thorn[i].speed,0.0,0.0);
-						glBegin(GL_LINES);
-							glColor3d(0.0, 0.0, 0.0); // Couleur noir
-							glVertex2f(Thorn[i].x+0.5, Thorn[i].y+0.5);
-							glVertex2f(Thorn[i].x+0.8, Thorn[i].y+0.5);
-						glEnd();
-						glPopMatrix();
-					}
-					else if(Thorn[i].angle==270)
-					{
-						glPushMatrix();
-						glTranslatef(0.0,Thorn[i].speed,0.0);
-						glBegin(GL_LINES);
-							glColor3d(0.0, 0.0, 0.0); // Couleur noir
-							glVertex2f(Thorn[i].x+0.5, Thorn[i].y+0.5);
-							glVertex2f(Thorn[i].x+0.5, Thorn[i].y+0.8);
-						glEnd();
-						glPopMatrix();
-					}
-				}
-			}
+			//affichage playerShoot
+			drawShooting(playerShoot->first, 0);
 			glColor3f(0.0, 0.0, 0.0);
 			char score[10];
 			char vie[10];
@@ -665,4 +497,4 @@ void drawMap(char map[][NbCol])			// fonction qui affiche TOUT
 	glutPostRedisplay();
 }
 
-//faire correspondre à la quantité de thorn en jeu ET activer la fonction de dessin tant que thorn->first!=NULL
+//faire correspondre à la quantité de playerShoot en jeu ET activer la fonction de dessin tant que playerShoot->first!=NULL

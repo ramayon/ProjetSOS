@@ -19,9 +19,10 @@
 
 char map[NbLin][NbCol];
 player Player[1];
-thorn Thorn[5];
 struct mobileChain *mob;
 struct mobileChain *wood;
+struct mobileChain *mobShoot;
+struct mobileChain *playerShoot;
 
 
 
