@@ -246,50 +246,62 @@ void drawMap(char map[][NbCol])			// fonction qui affiche TOUT
 {
 	if(menu==0)
 	{
+		glPushMatrix();
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, textureIds[12]);
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glBegin(GL_QUADS);
-			glColor3d(0.5, 0.5, 0.5); // Couleur gris
-				// Place les points du carré
-				// Specify the texture coordinates for each vertex
-				glVertex2d(0, 0);
-				glVertex2d(0, 26); 
-				glVertex2d(26, 26); 
-				glVertex2d(26,0);
+		glColor3d(0.5, 0.5, 0.5); // Couleur gris
+			// Place les points du carré
+			glTexCoord2f(0.0f, 1.0f); // sommet en bas à gauche
+			glVertex2d(0, 0);
+			glTexCoord2f(0.0f, 0.0f); // sommet en haut à gauche
+			glVertex2d(0, 26);
+			glTexCoord2f(1.0f, 0.0f); // sommet en haut à droite
+			glVertex2d(26, 26);
+			glTexCoord2f(1.0f, 1.0f); // sommet en haut à gauche
+			glVertex2d(26,0);
 		glEnd();
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_BLEND);
+		glPopMatrix();
 		glBegin(GL_QUADS);
 		glColor3d(0.0, 0.5, 0.5); // Couleur bleu clair
 				// Place les points du carré 
-				glVertex2d(10, 9); 
-				glVertex2d(10, 10); 
-				glVertex2d(16, 10); 
-				glVertex2d(16,9);
+				glVertex2d(6, 8.5); 
+				glVertex2d(6, 9.5); 
+				glVertex2d(12, 9.5); 
+				glVertex2d(12,8.5);
 		glBegin(GL_QUADS);
 		glColor3d(0.0, 0.5, 0.5); // Couleur bleu clair
 				// Place les points du carré 
-				glVertex2d(10, 11); 
-				glVertex2d(10, 12); 
-				glVertex2d(16, 12); 
-				glVertex2d(16,11);
+				glVertex2d(6, 10.5); 
+				glVertex2d(6, 11.5); 
+				glVertex2d(12, 11.5); 
+				glVertex2d(12,10.5);
 		glBegin(GL_QUADS);
 		glColor3d(0.0, 0.5, 0.5); // Couleur bleu clair
 				// Place les points du carré 
-				glVertex2d(10, 13); 
-				glVertex2d(10, 14); 
-				glVertex2d(16, 14); 
-				glVertex2d(16,13);
+				glVertex2d(6, 12.5); 
+				glVertex2d(6, 13.5); 
+				glVertex2d(12, 13.5); 
+				glVertex2d(12,12.5);
 		glBegin(GL_QUADS);
 		glColor3d(0.0, 0.5, 0.5); // Couleur bleu clair
 				// Place les points du carré 
-				glVertex2d(10, 15); 
-				glVertex2d(10, 16); 
-				glVertex2d(16, 16); 
-				glVertex2d(16,15);
+				glVertex2d(6, 14.5); 
+				glVertex2d(6, 15.5); 
+				glVertex2d(12, 15.5); 
+				glVertex2d(12,14.5);
 		glEnd();
 		glColor3f(0.0, 0.0, 0.0);
-			drawBitmapText("Nouvelle partie", 11.2, 9.7);
-			drawBitmapText("Parametres", 11.6,11.7);
-			drawBitmapText("Touches de jeu", 11.2, 13.7);
-			drawBitmapText("Quitter", 12.0, 15.7);
+			drawBitmapText("Nouvelle partie", 7.2, 9.2);
+			drawBitmapText("Parametres", 7.6,11.2);
+			drawBitmapText("Touches de jeu", 7.2, 13.2);
+			drawBitmapText("Quitter", 8.0, 15.2);
 			glEnd();
 		glFlush();
 	}
@@ -435,38 +447,51 @@ void drawMap(char map[][NbCol])			// fonction qui affiche TOUT
 	else if(menu==2)
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
+		glPushMatrix();
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, textureIds[13]);
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glClear(GL_COLOR_BUFFER_BIT);
 		glBegin(GL_QUADS);
-			glColor3d(0.5, 0.5, 0.5); // Couleur gris
-				// Place les points du carré 
-				glVertex2d(0, 0); 
-				glVertex2d(0, 26); 
-				glVertex2d(26, 26); 
-				glVertex2d(26,0);
+			// Place les points du carré
+			glTexCoord2f(0.0f, 1.0f); // sommet en bas à gauche
+			glVertex2d(0, 0);
+			glTexCoord2f(0.0f, 0.0f); // sommet en haut à gauche
+			glVertex2d(0, 26);
+			glTexCoord2f(1.0f, 0.0f); // sommet en haut à droite
+			glVertex2d(26, 26);
+			glTexCoord2f(1.0f, 1.0f); // sommet en haut à gauche
+			glVertex2d(26,0);
 		glEnd();
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_BLEND);
+		glPopMatrix();
 		glBegin(GL_QUADS);
-		glColor3d(0.5,0.5,0.0); // Couleur brun clair
+		glColor3d(0.5,0.5,0.5); // Couleur gris
 				// Place les points du carré 
-				glVertex2d(5, 9); 
-				glVertex2d(5, 16); 
-				glVertex2d(12, 16); 
-				glVertex2d(12,9);
+				glVertex2d(19.5, 9); 
+				glVertex2d(19.5, 16); 
+				glVertex2d(25.8, 16); 
+				glVertex2d(25.8,9);
 		glEnd();
 		glBegin(GL_QUADS);
 		glColor3d(0.0, 0.5, 0.5); // Couleur bleu clair
 				// Place les points du carré 
 				glVertex2d(2, 23); 
 				glVertex2d(2, 24); 
-				glVertex2d(10, 24); 
-				glVertex2d(10,23);
+				glVertex2d(9, 24); 
+				glVertex2d(9,23);
 		glEnd();
 		glColor3f(0.0, 0.0, 0.0);
-			drawBitmapText("Niveau de difficulte :", 6, 9.7);
+			drawBitmapText("Niveau de difficulte :", 19.7, 9.7);
 			glColor3d(0.0, 1.0, 0.2);
-			drawBitmapText("Facile", 6,11.7);
+			drawBitmapText("Facile (vit. x1)", 19.7,11.7);
 			glColor3d(0.0, 0.2, 1.0);
-			drawBitmapText("Normal", 6, 13.7);
+			drawBitmapText("Normal (vit. x2)", 19.7, 13.7);
 			glColor3d(1.0, 0.0, 0.2);
-			drawBitmapText("Difficile", 6, 15.7);
+			drawBitmapText("Difficile (vit. & voit. x2)", 19.7, 15.7);
 			glColor3d(0.0, 0.0, 0.0);
 			drawBitmapText("Retour au menu principal",2.3,23.7);
 			glEnd();
@@ -476,21 +501,35 @@ void drawMap(char map[][NbCol])			// fonction qui affiche TOUT
 	else if(menu==3) //menu touche du jeu
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
+		glPushMatrix();
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, textureIds[14]);
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glClear(GL_COLOR_BUFFER_BIT);
 		glBegin(GL_QUADS);
-			glColor3d(0.5, 0.5, 0.5); // Couleur gris
-				// Place les points du carré 
-				glVertex2d(0, 0); 
-				glVertex2d(0, 26); 
-				glVertex2d(26, 26); 
-				glVertex2d(26,0);
+		glColor3d(0.5, 0.5, 0.5); // Couleur gris
+			// Place les points du carré
+			glTexCoord2f(0.0f, 1.0f); // sommet en bas à gauche
+			glVertex2d(0, 0);
+			glTexCoord2f(0.0f, 0.0f); // sommet en haut à gauche
+			glVertex2d(0, 26);
+			glTexCoord2f(1.0f, 0.0f); // sommet en haut à droite
+			glVertex2d(26, 26);
+			glTexCoord2f(1.0f, 1.0f); // sommet en haut à gauche
+			glVertex2d(26,0);
 		glEnd();
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_BLEND);
+		glPopMatrix();
 		glBegin(GL_QUADS);
 		glColor3d(0.0, 0.5, 0.5); // Couleur bleu clair
 				// Place les points du carré 
 				glVertex2d(2, 23); 
 				glVertex2d(2, 24); 
-				glVertex2d(10, 24); 
-				glVertex2d(10,23);
+				glVertex2d(9, 24); 
+				glVertex2d(9,23);
 		glEnd();
 		glColor3f(0.0, 0.0, 0.0);
 			drawBitmapText("Z pour avancer", 6, 9.7);

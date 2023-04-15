@@ -194,19 +194,19 @@ void mouse(int bouton,int etat,int x,int y)
       case GLUT_LEFT_BUTTON  :
 	  						if(menu==0)
 							{
-                               if(x>385&&x<615&&y>463&&y<493)
+                               if(x>230&&x<465&&y>450&&y<480)
 							   {
 								exit(0); //quitter le jeu
 							   }
-							   else if(x>385&&x<615&&y>279&&y<309)
+							   else if(x>230&&x<465&&y>265&&y<295)
 							   {
 								   menu=1; //lancer le jeu
 							   }
-							   else if(x>385&&x<615&&y>339&&y<369)
+							   else if(x>230&&x<465&&y>325&&y<355)
 							   {
 								   menu=2; //afficher le menu paramètre
 							   }
-							   else if(x>385&&x<615&&y>401&&y<431)
+							   else if(x>230&&x<465&&y>385&&y<415)
 							   {
 								   menu=3; //afficher les règles
 							   }
