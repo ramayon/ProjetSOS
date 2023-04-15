@@ -251,74 +251,82 @@ void Keyboard(unsigned char key, int x, int y)  // fonction allant gérer les in
 		case'a':
 			FIRE = true;
 			break;
+		case'p':
+			PAUSE = !PAUSE;
+			break;
 	}	
 }
 
 void game(char map[][NbCol]) //Fonction gérant toutes les mécaniques du jeu
 {
-	if(mobileGeneration==0)
+	if(!PAUSE)
 	{
-		mob=mkmobileChaine();
-		wood=mkmobileChaine();
-		playerShoot=mkmobileChaine();
-		mobShoot=mkmobileChaine();
-		mobileElem2(wood);
-		mobileElem(mob);	//créer les mobiles
-		mobileGeneration=1;
-	}
+		if(mobileGeneration==0)
+		{
+			mob=mkmobileChaine();
+			wood=mkmobileChaine();
+			playerShoot=mkmobileChaine();
+			mobShoot=mkmobileChaine();
+			mobileElem2(wood);
+			mobileElem(mob);	//créer les mobiles
+			mobileGeneration=1;
+		}
 
-	if(FIRE==true)
-	{
-		pushmChain(playerShoot,8,Player->y,Player->x,Player->angle,0);
-		FIRE=false;
-	}
-	//readValue(thorn);		//afficher les valeurs des projectiles
-	drawMap(map);			//afficher la carte
-	glutKeyboardFunc(Keyboard);		// Fonction de glut gérant le clavier
-    glutMouseFunc(mouse);			// Fonction de gestion de la souris
-	if (LEFT == true)
-	{
-		
-		moveLeft(map);		//va se déplacer vers la gauche si on appuie sur q
-		LEFT = false;
-		
-	}
-	if (RIGHT == true)
-	{
-		
-		moveRight(map);		//va se déplacer vers la droite si on apppuie sur d
-		RIGHT = false;
-	}
-	if (UP == true)
-	{
-		moveUp(map);			//va se déplacer vers la droite si on apppuie sur z
-		UP = false;
-	}
-	
-	if (DOWN == true)
-	{
-		
-        moveDown(map);		//va se déplacer vers la droite si on apppuie sur s
-		DOWN = false;
-	}
-	mobAutoShoot();			//les mobiles tirent sur le joueur
-	testCollision();		//test si le joueur est en collision avec un mobile
-	testCollisionPShoot(); //test si un véhicule est en collision avec un projectile du joueur
-	popmChain(mob);			//supprime les mobiles qui sont morts
-	popmChain(mobShoot);	//supprime les projectiles qui sont morts
-	popmChain(playerShoot);//supprime les projectiles du joueur qui sont morts
-	if(deadMob!=0)
-	{
-		if(deadMob==1||deadMob==2||deadMob==5||deadMob==6)
+		if(FIRE==true)
 		{
-			pushmChain(mob,deadMob-1,deadMobY,24,0,0);	//réanime les mobiles qui sont morts
+			pushmChain(playerShoot,8,Player->y,Player->x,Player->angle,0);
+			FIRE=false;
 		}
-		else if(deadMob==3||deadMob==4||deadMob==7||deadMob==8)
+		//readValue(thorn);		//afficher les valeurs des projectiles
+		drawMap(map);			//afficher la carte
+		if (LEFT == true)
 		{
-			pushmChain(mob,deadMob-1,deadMobY,1,0,0);	//réanime les mobiles qui sont morts
+			
+			moveLeft(map);		//va se déplacer vers la gauche si on appuie sur q
+			LEFT = false;
+			
+		}
+		if (RIGHT == true)
+		{
+			
+			moveRight(map);		//va se déplacer vers la droite si on apppuie sur d
+			RIGHT = false;
+		}
+		if (UP == true)
+		{
+			moveUp(map);			//va se déplacer vers la droite si on apppuie sur z
+			UP = false;
 		}
 		
-		deadMob=0;
+		if (DOWN == true)
+		{
+			
+			moveDown(map);		//va se déplacer vers la droite si on apppuie sur s
+			DOWN = false;
+		}
+		mobAutoShoot();			//les mobiles tirent sur le joueur
+		testCollision();		//test si le joueur est en collision avec un mobile
+		testCollisionPShoot(); //test si un véhicule est en collision avec un projectile du joueur
+		popmChain(mob);			//supprime les mobiles qui sont morts
+		popmChain(mobShoot);	//supprime les projectiles qui sont morts
+		popmChain(playerShoot);//supprime les projectiles du joueur qui sont morts
+		if(deadMob!=0)
+		{
+			if(deadMob==1||deadMob==2||deadMob==5||deadMob==6)
+			{
+				pushmChain(mob,deadMob-1,deadMobY,24,0,0);	//réanime les mobiles qui sont morts
+			}
+			else if(deadMob==3||deadMob==4||deadMob==7||deadMob==8)
+			{
+				pushmChain(mob,deadMob-1,deadMobY,1,0,0);	//réanime les mobiles qui sont morts
+			}
+			
+			deadMob=0;
+		}
+		glutPostRedisplay();
 	}
-	glutPostRedisplay();
+	else
+	{
+		drawMap(map);
+	}
 }

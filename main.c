@@ -72,6 +72,10 @@ int main(int argc, char *argv[])
    glutDisplayFunc(Display);
    // Fonction de redimentionnement 
    glutReshapeFunc(handleResize);
+   // Fonction de glut gérant le clavier
+   glutKeyboardFunc(Keyboard);
+   // Fonction de gestion de la souris
+   glutMouseFunc(mouse);
    // Fonction gérant le temps pour les transformations
    glutTimerFunc(1000/60, timer, 0);
    // Fonction gérant la lecture des textures

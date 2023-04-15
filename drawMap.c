@@ -41,118 +41,125 @@ void tostring(char str[], int num)
 
 void timer(int)
 {
-	glutPostRedisplay();
-	glutTimerFunc(2400/60, timer, 0);
-	if(mob!=NULL)
+	if(PAUSE==false)
 	{
-		struct mobile *temp=mob->first;
-		while(temp!=NULL)
+		glutPostRedisplay();
+		glutTimerFunc(2400/60, timer, 0);
+		if(mob!=NULL)
 		{
-			float *tp=&temp->translation;
-			if(temp->alive==true)
+			struct mobile *temp=mob->first;
+			while(temp!=NULL)
 			{
-				if(temp->value==1||temp->value==2||temp->value==5||temp->value==6)
+				float *tp=&temp->translation;
+				if(temp->alive==true)
 				{
-					if(temp->translation>-25)
+					if(temp->value==1||temp->value==2||temp->value==5||temp->value==6)
 					{
-						*tp-=temp->speed;
+						if(temp->translation>-25)
+						{
+							*tp-=temp->speed;
+						}
+						else if(temp->translation<-25)
+						{
+							*tp+=25;
+						}
 					}
-					else if(temp->translation<-25)
+					else if(temp->value==3||temp->value==4||temp->value==7||temp->value==8)
 					{
-						*tp+=25;
+						if(temp->translation<25)
+						{
+							*tp+=temp->speed;
+						}
+						else if(temp->translation>1)
+						{
+							*tp-=25;
+						}
 					}
 				}
-				else if(temp->value==3||temp->value==4||temp->value==7||temp->value==8)
+				temp=temp->next;
+			}
+		}
+		if(mobShoot!=NULL)
+		{
+			struct mobile *temp3=mobShoot->first;
+			while(temp3!=NULL)
+			{
+				float *tp3=&temp3->translation;
+				if(temp3->shootAngle==(-1))
 				{
-					if(temp->translation<25)
-					{
-						*tp+=temp->speed;
-					}
-					else if(temp->translation>1)
-					{
-						*tp-=25;
-					}
+					*tp3-=0.5;
 				}
+				else if(temp3->shootAngle==1)
+				{
+					*tp3+=0.5;
+				}
+				temp3=temp3->next;
 			}
-			temp=temp->next;
 		}
-	}
-	if(mobShoot!=NULL)
-	{
-		struct mobile *temp3=mobShoot->first;
-		while(temp3!=NULL)
+		if(playerShoot!=NULL)
 		{
-			float *tp3=&temp3->translation;
-			if(temp3->shootAngle==(-1))
+			struct mobile *temp0=playerShoot->first;
+			while(temp0!=NULL)
 			{
-				*tp3-=0.5;
+				float *tp0=&temp0->translation;
+				if(temp0->angle==0||temp0->angle==90)
+				{
+					*tp0-=0.3;
+				}
+				else if(temp0->angle==180||temp0->angle==270)
+				{
+					*tp0+=0.3;
+				}
+				temp0=temp0->next;
 			}
-			else if(temp3->shootAngle==1)
-			{
-				*tp3+=0.5;
-			}
-			temp3=temp3->next;
 		}
-	}
-	if(playerShoot!=NULL)
-	{
-		struct mobile *temp0=playerShoot->first;
-		while(temp0!=NULL)
+		if(wood!=NULL)
 		{
-			float *tp0=&temp0->translation;
-			if(temp0->angle==0||temp0->angle==90)
+			struct mobile *temp2=wood->first;
+			while(temp2!=NULL)
 			{
-				*tp0-=0.3;
-			}
-			else if(temp0->angle==180||temp0->angle==270)
-			{
-				*tp0+=0.3;
-			}
-			temp0=temp0->next;
-		}
-	}
-	if(wood!=NULL)
-	{
-		struct mobile *temp2=wood->first;
-		while(temp2!=NULL)
-		{
-			float *tp=&temp2->translation;
-			float *tp2=&temp2->x;
+				float *tp=&temp2->translation;
+				float *tp2=&temp2->x;
 
-			if(temp2->value==1||temp2->value==3||temp2->value==5||temp2->value==7)
-			{
-				if((temp2->x+temp2->translation)>-5)
+				if(temp2->value==1||temp2->value==3||temp2->value==5||temp2->value==7)
 				{
-					*tp-=temp2->speed;
+					if((temp2->x+temp2->translation)>-5)
+					{
+						*tp-=temp2->speed;
+					}
+					else
+					{
+						*tp=0;
+						*tp2=26;
+					}
+					if(Player->x>=temp2->x+temp2->translation&&Player->x<=temp2->x+5+temp2->translation&&Player->y==temp2->y) 
+					{
+						Player->x-=temp2->speed;
+					}
 				}
-				else
+				else if(temp2->value==2||temp2->value==4||temp2->value==6||temp2->value==8)
 				{
-					*tp=0;
-					*tp2=26;
+					if((temp2->x+temp2->translation)<26)
+					{
+						*tp+=temp2->speed;
+					}
+					else
+					{
+						*tp=0;
+						*tp2=-5;
+					}
+					if(Player->x>=temp2->x+temp2->translation&&Player->x<=temp2->x+5+temp2->translation&&Player->y==temp2->y) 
+					{
+						Player->x+=temp2->speed;
+					}
 				}
-				if(Player->x>=temp2->x+temp2->translation&&Player->x<=temp2->x+5+temp2->translation&&Player->y==temp2->y) 
-				{
-					Player->x-=temp2->speed;
-				}
+			temp2=temp2->next;
 			}
-			else if(temp2->value==2||temp2->value==4||temp2->value==6||temp2->value==8)
-			{
-				if((temp2->x+temp2->translation)<26)
-				{
-					*tp+=temp2->speed;
-				}
-				else
-				{
-					*tp=0;
-					*tp2=-5;
-				}
-				if(Player->x>=temp2->x+temp2->translation&&Player->x<=temp2->x+5+temp2->translation&&Player->y==temp2->y) 
-				{
-					Player->x+=temp2->speed;
-				}
-			}
-		temp2=temp2->next;
 		}
+	}
+	else
+	{
+		glutTimerFunc(100, timer, 0); //Vérifie toutes les 100ms si la pause est terminée
 	}
 }
 

@@ -42,7 +42,7 @@ void moveRight(char map[][NbCol])		//la fonction va vérifier si on peut se dép
 	}
 }
 
-void moveUp(char map[][NbCol])
+void moveUp(char map[][NbCol])		//la fonction va vérifier si on peut se déplacer vers le haut et le faire le cas échéant
 {
     int Mx = 0, My = 0;
       
@@ -56,7 +56,7 @@ void moveUp(char map[][NbCol])
 	}
 }
 
-void moveDown(char map[][NbCol])	//droite
+void moveDown(char map[][NbCol])	//la fonction va vérifier si on peut se déplacer vers le bas et le faire le cas échéant
 {
     int Mx = 0, My = 0;
     

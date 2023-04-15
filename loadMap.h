@@ -23,6 +23,7 @@ extern struct mobileChain *mobShoot;
 extern struct mobileChain *playerShoot;
 extern unsigned int menu;
 extern bool FIRE;
+extern bool PAUSE;
 bool loadMap(char map[][NbCol]);
 
 #endif
