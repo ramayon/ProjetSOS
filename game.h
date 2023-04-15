@@ -6,6 +6,7 @@
 
 void testCollision();
 void testCollisionPShoot();
+bool testCollisionPWood();
 void mobAutoShoot();
 void removeDead(struct mobileChain *mob,struct mobileChain *thorn);
 void mouse(int bouton,int etat,int x,int y);

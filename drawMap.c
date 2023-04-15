@@ -130,6 +130,10 @@ void timer(int)
 					*tp=0;
 					*tp2=26;
 				}
+				if(Player->x>=temp2->x+temp2->translation&&Player->x<=temp2->x+5+temp2->translation&&Player->y==temp2->y) 
+				{
+					Player->x-=temp2->speed;
+				}
 			}
 			else if(temp2->value==2||temp2->value==4||temp2->value==6||temp2->value==8)
 			{
@@ -141,6 +145,10 @@ void timer(int)
 				{
 					*tp=0;
 					*tp2=-5;
+				}
+				if(Player->x>=temp2->x+temp2->translation&&Player->x<=temp2->x+5+temp2->translation&&Player->y==temp2->y) 
+				{
+					Player->x+=temp2->speed;
 				}
 			}
 		temp2=temp2->next;
@@ -193,7 +201,7 @@ void drawShooting(struct mobile *temp, float translation)
     }
 }
 
-void drawObject(int x, int y, int tile, int size, float translation)
+void drawObject(float x, float y, int tile, int size, float translation)
 {
 	glPushMatrix();
     glEnable(GL_BLEND);

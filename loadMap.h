@@ -9,8 +9,8 @@
 typedef struct play
 {
 	int vie;
-	int x; //position en X
-    int y; //position en Y
+	float x; //position en X
+    float y; //position en Y
     float angle;
     int score;
     bool alive; //si le joueur est en vie ou non

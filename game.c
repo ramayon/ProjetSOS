@@ -303,7 +303,7 @@ void game(char map[][NbCol]) //Fonction gérant toutes les mécaniques du jeu
 	}
 	mobAutoShoot();			//les mobiles tirent sur le joueur
 	testCollision();		//test si le joueur est en collision avec un mobile
-	testCollisionPShoot(); //test si un véhicule est en collision avec un projectile
+	testCollisionPShoot(); //test si un véhicule est en collision avec un projectile du joueur
 	popmChain(mob);			//supprime les mobiles qui sont morts
 	popmChain(mobShoot);	//supprime les projectiles qui sont morts
 	popmChain(playerShoot);//supprime les projectiles du joueur qui sont morts
