@@ -27,6 +27,34 @@ int deadMob=0;
 int deadMobY=0;
 int deadMobAngle=0;
 unsigned int menu=0;
+// variables nécessaires pour la gestion de l'animation de mort.
+clock_t death_start_time;
+bool death_animation_started = false;
+
+void death_animation() 
+{
+    if (Player->alive==false&&death_animation_started==false) 
+	{
+        death_start_time=clock();
+        death_animation_started=true;
+    }
+    if (death_animation_started==true) 
+	{
+        double elapsedTime=(double)(clock()-death_start_time)/CLOCKS_PER_SEC;
+
+        // Applique la texture de mort sur la joueur
+        drawObject(Player->x, Player->y, 16, 1, 0);
+		//contrôle la durée de mort du joueur
+        if (elapsedTime>=2.0) 
+		{
+            // Replace le joueur au point de départ après 2 secondes.
+            Player->x = initial_x;
+            Player->y = initial_y;
+            Player->alive=true;
+            death_animation_started=false;
+        }
+    }
+}
 
 void testCollisionPShoot()
 {
@@ -259,7 +287,7 @@ void Keyboard(unsigned char key, int x, int y)  // fonction allant gérer les in
 
 void game(char map[][NbCol]) //Fonction gérant toutes les mécaniques du jeu
 {
-	if(!PAUSE)
+	if(PAUSE==false)
 	{
 		if(mobileGeneration==0)
 		{

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void death_animation();
 void testCollision();
 void testCollisionPShoot();
 bool testCollisionPWood();

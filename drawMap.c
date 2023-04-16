@@ -437,7 +437,7 @@ void drawMap(char map[][NbCol])			// fonction qui affiche TOUT
 		glFlush();
 		glutPostRedisplay();
 		}
-		else if(Player->alive==false)
+		else if(Player->vie==0)
 		{
 			glClear(GL_COLOR_BUFFER_BIT);
 			glColor3d(1.0, 0.0, 1.0);
