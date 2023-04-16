@@ -39,6 +39,22 @@ void tostring(char str[], int num)
     str[len] = '\0';
 }
 
+void enterName()
+{
+	glPushMatrix();
+	drawColoredSquare(6.9,1.3,13,1,0,0,0,0); // Dessine un rectangle noir pour le texte
+	glColor3f(1.0f, 1.0f, 1.0f);
+	drawBitmapText("Donne moi ton nom que je l'inscrive dans le livre", 7.0, 2);
+	drawColoredSquare(1.1, 11.3, 5, 1, 0, 1, 1, 1); // Dessine un rectangle blanc
+	glColor3f(0.0f, 0.0f, 0.0f);
+	// Affiche un à un les caractères du nom introduit
+	glRasterPos2f(1.2, 12);
+	for (int i=0;i<inputNameIndex;i++) 
+	{
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, Player->name[i]);
+	}
+}
+
 void timer(int)
 {
 	if(PAUSE==false)
@@ -208,7 +224,7 @@ void drawShooting(struct mobile *temp, float translation)
     }
 }
 
-void drawObject(float x, float y, int tile, int size, float translation)
+void drawObject(float x, float y, int tile, float sizeX, float sizeY, float translation)
 {
 	glPushMatrix();
     glEnable(GL_BLEND);
@@ -221,14 +237,28 @@ void drawObject(float x, float y, int tile, int size, float translation)
         glTexCoord2f(0.0f, 1.0f); // sommet en bas à gauche
         glVertex2f(x, y);
         glTexCoord2f(0.0f, 0.0f); // sommet en haut à gauche
-        glVertex2f(x, y + 1);
+        glVertex2f(x, y + sizeY);
         glTexCoord2f(1.0f, 0.0f); // sommet en haut à droite
-        glVertex2f(x + size, y + 1);
+        glVertex2f(x + sizeX, y + sizeY);
         glTexCoord2f(1.0f, 1.0f); // sommet en bas à droite
-        glVertex2f(x + size, y);
+        glVertex2f(x + sizeX, y);
     glEnd();
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_BLEND);
+    glPopMatrix();
+}
+
+void drawColoredSquare(float x, float y, float sizeX, float sizeY, float translation, float r, float g, float b)
+{
+    glPushMatrix();
+    glTranslatef(translation, 0.0, 0.0);
+    glBegin(GL_QUADS);
+        glColor3f(r, g, b);
+        glVertex2f(x, y);
+        glVertex2f(x, y + sizeY);
+        glVertex2f(x + sizeX, y + sizeY);
+        glVertex2f(x + sizeX, y);
+    glEnd();
     glPopMatrix();
 }
 
@@ -246,57 +276,11 @@ void drawMap(char map[][NbCol])			// fonction qui affiche TOUT
 {
 	if(menu==0)
 	{
-		glPushMatrix();
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, textureIds[12]);
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-		glClear(GL_COLOR_BUFFER_BIT);
-		glBegin(GL_QUADS);
-		glColor3d(0.5, 0.5, 0.5); // Couleur gris
-			// Place les points du carré
-			glTexCoord2f(0.0f, 1.0f); // sommet en bas à gauche
-			glVertex2d(0, 0);
-			glTexCoord2f(0.0f, 0.0f); // sommet en haut à gauche
-			glVertex2d(0, 26);
-			glTexCoord2f(1.0f, 0.0f); // sommet en haut à droite
-			glVertex2d(26, 26);
-			glTexCoord2f(1.0f, 1.0f); // sommet en haut à gauche
-			glVertex2d(26,0);
-		glEnd();
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_BLEND);
-		glPopMatrix();
-		glBegin(GL_QUADS);
-		glColor3d(0.0, 0.5, 0.5); // Couleur bleu clair
-				// Place les points du carré 
-				glVertex2d(6, 8.5); 
-				glVertex2d(6, 9.5); 
-				glVertex2d(12, 9.5); 
-				glVertex2d(12,8.5);
-		glBegin(GL_QUADS);
-		glColor3d(0.0, 0.5, 0.5); // Couleur bleu clair
-				// Place les points du carré 
-				glVertex2d(6, 10.5); 
-				glVertex2d(6, 11.5); 
-				glVertex2d(12, 11.5); 
-				glVertex2d(12,10.5);
-		glBegin(GL_QUADS);
-		glColor3d(0.0, 0.5, 0.5); // Couleur bleu clair
-				// Place les points du carré 
-				glVertex2d(6, 12.5); 
-				glVertex2d(6, 13.5); 
-				glVertex2d(12, 13.5); 
-				glVertex2d(12,12.5);
-		glBegin(GL_QUADS);
-		glColor3d(0.0, 0.5, 0.5); // Couleur bleu clair
-				// Place les points du carré 
-				glVertex2d(6, 14.5); 
-				glVertex2d(6, 15.5); 
-				glVertex2d(12, 15.5); 
-				glVertex2d(12,14.5);
-		glEnd();
+		drawObject(0,0,12,26,26,0); // Affiche le fond du menu 0.
+		drawColoredSquare(6,8.5,6,1, 0,0,0.5,0.5); // Affiche le bouton "Nouvelle partie".
+		drawColoredSquare(6,10.5,6,1, 0,0,0.5,0.5); // Affiche le bouton "Parametres".
+		drawColoredSquare(6,12.5,6,1, 0,0,0.5,0.5); // Affiche le bouton "Touches de jeu".
+		drawColoredSquare(6,14.5,6,1, 0,0,0.5,0.5); // Affiche le bouton "Quitter".
 		glColor3f(0.0, 0.0, 0.0);
 			drawBitmapText("Nouvelle partie", 7.2, 9.2);
 			drawBitmapText("Parametres", 7.6,11.2);
@@ -307,7 +291,7 @@ void drawMap(char map[][NbCol])			// fonction qui affiche TOUT
 	}
 	else if(menu==1)
 	{
-		if(Player->alive==true)
+		if(Player->vie>0)
 		{
 			int i, j;
 			// Commence l'affichage
@@ -319,96 +303,85 @@ void drawMap(char map[][NbCol])			// fonction qui affiche TOUT
 				// Si c'est un mur, on dessine un carré 
 				if(map[i][j] == '0'||map[i][j] == '4'||map[i][j] == '5')
 				{   
-					drawObject(i,j,0,1,0);
+					drawObject(i,j,0,1,1,0);
 				}
 				// Si c'est de l'eau, on dessine un carré 
 				else if(map[i][j] == '3')
 				{   
-					drawObject(i,j,1,1,0);
+					drawObject(i,j,1,1,1,0);
 				}
 				// Si c'est de l'herbe, on dessine un carré
 				else if(map[i][j] == '2'||map[i][j] == '6')
 				{   
-					drawObject(i,j,2,1,0);
+					drawObject(i,j,2,1,1,0);
 				}
-			glEnd();
 			glDisable(GL_TEXTURE_2D);
-			glBegin(GL_QUADS);
 			// Parcourt toutes les cellules de la matrice 
 			for(i=0; i<NbCol; i++)
 			for(j=0; j<NbLin; j++)
 				// Si c'est une ligne, on dessine une ligne
 				if(map[i][j] == '4')
 				{   
-					glColor3d(0.7, 0.7, 0.0); // Couleur jaune
-					// Place les points du carré 
-					glVertex2f(i+0.5, j+0.25); 
-					glVertex2f(i+0.5, j+0.75); 
-					glVertex2f(i+1.25, j+0.75); 
-					glVertex2f(i+1.25, j+0.25);
+					drawColoredSquare(i+0.5,j+0.25,0.75,0.5,0,0.7,0.7,0.0); // Couleur jaune des traits de route
 				}
 				else if(map[i][j] == '5')
 				{   
-					glColor3d(1.0, 1.0, 1.0); // Couleur blanche
-					// Place les points du carré 
-					glVertex2f(i, j+0.4); 
-					glVertex2f(i, j+0.6); 
-					glVertex2f(i+1, j+0.6); 
-					glVertex2f(i+1, j+0.4);
+					drawColoredSquare(i,j+0.4,1,0.2,0,1.0,1.0,1.0); // Couleur blanche des traits de route
 				}
 				else if(map[i][j] == '#')
 				{   
-					glColor3f(0.5, 0.5, 0.05); // Couleur brune des bords
-					// Place les points du carré 
-					glVertex2d(i, j); 
-					glVertex2d(i, j+1); 
-					glVertex2d(i+1, j+1); 
-					glVertex2d(i+1, j);
+					drawColoredSquare(i,j,1,1,0,0.5,0.5,0.05); // Couleur brune des bords de map
 				}
 			// Achève l'affichage
-			glEnd();
 			struct mobile *temp2=wood->first;
 			while (temp2!=NULL)
 			{
-				drawObject(temp2->x,temp2->y,3,5,temp2->translation);
+				drawObject(temp2->x,temp2->y,3,5,1,temp2->translation);
 				temp2=temp2->next;
 			}
-			if(Player->angle==0) //Gauche
+			if(Player->alive==false)
 			{
-				drawObject(Player->x,Player->y,4,1,0);
+				// Applique la texture de mort sur la joueur
+				drawObject(Player->x,Player->y,16,1,1,0);
 			}
-			else if(Player->angle==90) //Haut
+			else
 			{
-				drawObject(Player->x,Player->y,5,1,0);
+				if(Player->angle==0) //Gauche
+				{
+					drawObject(Player->x,Player->y,4,1,1,0);
+				}
+				else if(Player->angle==90) //Haut
+				{
+					drawObject(Player->x,Player->y,5,1,1,0);
+				}
+				else if(Player->angle==270) //Bas
+				{
+					drawObject(Player->x,Player->y,6,1,1,0);
+				}
+				else if(Player->angle==180) //Droite
+				{
+					drawObject(Player->x,Player->y,7,1,1,0);
+				}
 			}
-			else if(Player->angle==270) //Bas
-			{
-				drawObject(Player->x,Player->y,6,1,0);
-			}
-			else if(Player->angle==180) //Droite
-			{
-				drawObject(Player->x,Player->y,7,1,0);
-			}
-			glEnd();
 			//affichage mobile
 			struct mobile *temp=mob->first;
 			while(temp!=NULL)
 			{
 				if(temp->alive==true&&(temp->value==2||temp->value==6))
 				{
-					drawObject(temp->x,temp->y,9,1,temp->translation);
+					drawObject(temp->x,temp->y,9,1,1,temp->translation);
 				}
 				else if(temp->alive==true&&(temp->value==1||temp->value==5))
 				{
-					drawObject(temp->x,temp->y,8,1,temp->translation);
+					drawObject(temp->x,temp->y,8,1,1,temp->translation);
 				}
 				else if(temp->alive==true&&(temp->value==3||temp->value==7))
 				{
-					drawObject(temp->x,temp->y,11,1,temp->translation);
+					drawObject(temp->x,temp->y,11,1,1,temp->translation);
 				}
 				else if(temp->alive==true&&(temp->value==4||temp->value==8))
 				{
-					drawObject(temp->x,temp->y,10,1,temp->translation);
+					drawObject(temp->x,temp->y,10,1,1,temp->translation);
 				}
 				if(temp->shoot == true)
 				{
@@ -425,14 +398,20 @@ void drawMap(char map[][NbCol])			// fonction qui affiche TOUT
 			glColor3f(0.0, 0.0, 0.0);
 			char score[10];
 			char vie[10];
+			char minutesStr[3];
+			char secondsStr[3];
 			tostring(score,Player[0].score);
 			tostring(vie,Player[0].vie);
-			//tostring(timer,player->timer);
+			tostring(minutesStr,timeGame/60);
+			tostring(secondsStr,timeGame%60);
 			drawBitmapText("Score: ", 2.0, 0.8);
 			drawBitmapText(score, 4.0, 0.8);
 			drawBitmapText("Vie: ", 5.5, 0.8);
 			drawBitmapText(vie, 7.0, 0.8);
 			drawBitmapText("Timer: ", 9.0, 0.8);
+			drawBitmapText(minutesStr, 11.2, 0.8);
+			drawBitmapText(":", 11.5, 0.8);
+			drawBitmapText(secondsStr, 11.8, 0.8);
 			glEnd();
 		glFlush();
 		glutPostRedisplay();
@@ -447,51 +426,29 @@ void drawMap(char map[][NbCol])			// fonction qui affiche TOUT
 	else if(menu==2)
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
-		glPushMatrix();
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, textureIds[13]);
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-		glClear(GL_COLOR_BUFFER_BIT);
-		glBegin(GL_QUADS);
-			// Place les points du carré
-			glTexCoord2f(0.0f, 1.0f); // sommet en bas à gauche
-			glVertex2d(0, 0);
-			glTexCoord2f(0.0f, 0.0f); // sommet en haut à gauche
-			glVertex2d(0, 26);
-			glTexCoord2f(1.0f, 0.0f); // sommet en haut à droite
-			glVertex2d(26, 26);
-			glTexCoord2f(1.0f, 1.0f); // sommet en haut à gauche
-			glVertex2d(26,0);
-		glEnd();
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_BLEND);
-		glPopMatrix();
-		glBegin(GL_QUADS);
-		glColor3d(0.5,0.5,0.5); // Couleur gris
-				// Place les points du carré 
-				glVertex2d(19.5, 9); 
-				glVertex2d(19.5, 16); 
-				glVertex2d(25.8, 16); 
-				glVertex2d(25.8,9);
-		glEnd();
-		glBegin(GL_QUADS);
-		glColor3d(0.0, 0.5, 0.5); // Couleur bleu clair
-				// Place les points du carré 
-				glVertex2d(2, 23); 
-				glVertex2d(2, 24); 
-				glVertex2d(9, 24); 
-				glVertex2d(9,23);
-		glEnd();
+		drawObject(0,0,13,26,26,0); // Affiche le fond du menu 2
+		drawColoredSquare(19.5,8,6.3,2,0,0.5,0.5,0.5); // Couleur grise de la case montrant le niveau de difficulté actuel.
+		drawColoredSquare(2,23,7,1,0,0.0,0.5,0.5); // Couleur bleu clair de la case retour au menu principal.
 		glColor3f(0.0, 0.0, 0.0);
-			drawBitmapText("Niveau de difficulte :", 19.7, 9.7);
+			drawBitmapText("Difficulté actuelle :", 19.7, 8.7);
 			glColor3d(0.0, 1.0, 0.2);
 			drawBitmapText("Facile (vit. x1)", 19.7,11.7);
+			if(difficulty==1)
+			{
+				drawBitmapText("Facile (vit. x1)", 19.7,9.7);
+			}
 			glColor3d(0.0, 0.2, 1.0);
 			drawBitmapText("Normal (vit. x2)", 19.7, 13.7);
+			if(difficulty==2)
+			{
+				drawBitmapText("Normal (vit. x2)", 19.7,9.7);
+			}
 			glColor3d(1.0, 0.0, 0.2);
 			drawBitmapText("Difficile (vit. & voit. x2)", 19.7, 15.7);
+			if(difficulty==3)
+			{
+				drawBitmapText("Difficile (vit. & voit. x2)", 19.7,9.7);
+			}
 			glColor3d(0.0, 0.0, 0.0);
 			drawBitmapText("Retour au menu principal",2.3,23.7);
 			glEnd();
@@ -501,51 +458,24 @@ void drawMap(char map[][NbCol])			// fonction qui affiche TOUT
 	else if(menu==3) //menu touche du jeu
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
-		glPushMatrix();
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, textureIds[14]);
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-		glClear(GL_COLOR_BUFFER_BIT);
-		glBegin(GL_QUADS);
-		glColor3d(0.5, 0.5, 0.5); // Couleur gris
-			// Place les points du carré
-			glTexCoord2f(0.0f, 1.0f); // sommet en bas à gauche
-			glVertex2d(0, 0);
-			glTexCoord2f(0.0f, 0.0f); // sommet en haut à gauche
-			glVertex2d(0, 26);
-			glTexCoord2f(1.0f, 0.0f); // sommet en haut à droite
-			glVertex2d(26, 26);
-			glTexCoord2f(1.0f, 1.0f); // sommet en haut à gauche
-			glVertex2d(26,0);
-		glEnd();
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_BLEND);
-		glPopMatrix();
-		glBegin(GL_QUADS);
-		glColor3d(0.0, 0.5, 0.5); // Couleur bleu clair
-				// Place les points du carré 
-				glVertex2d(2, 23); 
-				glVertex2d(2, 24); 
-				glVertex2d(9, 24); 
-				glVertex2d(9,23);
-		glEnd();
+		drawObject(0,0,14,26,26,0); // Affiche le fond du menu 3
+		drawColoredSquare(2,23,7,1,0,0.0,0.5,0.5); // Couleur bleu clair de la case retour au menu principal.
 		glColor3f(0.0, 0.0, 0.0);
-			drawBitmapText("Z pour avancer", 6, 9.7);
-			drawBitmapText("S pour reculer", 6,11.7);
-			drawBitmapText("Q pour aller a gauche", 6, 13.7);
-			drawBitmapText("D pour aller a droite", 6, 15.7);
-			drawBitmapText("A pour tirer des epines", 6, 17.7);
-			drawBitmapText("E pour tirer des epines electrique qui immobilisent", 6, 19.7);
+			drawBitmapText("Z = Avancer", 18.5, 12.2);
+			drawBitmapText("S = Reculer", 18.5, 13.2);
+			drawBitmapText("Q = Gauche", 18.5, 14.2);
+			drawBitmapText("D = Droite", 18.5, 15.2);
+			drawBitmapText("A = Tir", 18.5, 16.2);
+			drawBitmapText("E = Tir Electrique", 18.5, 17.2);
 			drawBitmapText("Retour au menu principal",2.3,23.7);
 			glEnd();
 		glFlush();
 		glutPostRedisplay();
 	}
-	else if(menu==4)
+	else if(inputName==true)
 	{
-
+		drawObject(0,0,15,26,26,0); // Affiche le fond du menu 4
+		enterName(); //Affiche le pop-up pour entrer le nom
 	}
 	glFlush();
 	glutPostRedisplay();

@@ -16,6 +16,9 @@
 #include "hedgehog.h"
 #include "mobile.h"
 
+
+// Toutes les variables externes sont définies dans loadMap.h
+// Si dessous les variables globales du fichier game.c
 bool UP = false;
 bool LEFT = false;
 bool RIGHT = false;
@@ -27,11 +30,21 @@ int deadMob=0;
 int deadMobY=0;
 int deadMobAngle=0;
 unsigned int menu=0;
+unsigned int difficulty=1;
+
 // variables nécessaires pour la gestion de l'animation de mort.
 clock_t death_start_time;
 bool death_animation_started = false;
 
-void death_animation() 
+// variables nécessaires pour la gestion de l'introduction du nom du joueur et l'affichage de celui-ci en temps réel.
+bool inputName = false;
+int inputNameIndex = 0;
+
+// variable nécessaires pour la gestion du temps qui s'écoule dès que le jeu commence.
+time_t startGame;
+int timeGame = 0;
+
+void death_animation()
 {
     if (Player->alive==false&&death_animation_started==false) 
 	{
@@ -41,15 +54,13 @@ void death_animation()
     if (death_animation_started==true) 
 	{
         double elapsedTime=(double)(clock()-death_start_time)/CLOCKS_PER_SEC;
-
-        // Applique la texture de mort sur la joueur
-        drawObject(Player->x, Player->y, 16, 1, 0);
 		//contrôle la durée de mort du joueur
         if (elapsedTime>=2.0) 
 		{
             // Replace le joueur au point de départ après 2 secondes.
-            Player->x = initial_x;
-            Player->y = initial_y;
+			Player->vie-=1;
+			Player->y=24;
+			Player->x=12;
             Player->alive=true;
             death_animation_started=false;
         }
@@ -119,18 +130,14 @@ void testCollision()
 		{
 			if(Player->x<tmp->x+tmp->translation&&tmp->x+tmp->translation<Player->x+0.6&& Player->y==tmp->y)
 			{
-				Player->vie-=1;
-				Player->y=24;
-				Player->x=12;
+				Player->alive=false;
 			}
 		}
 		else if(tmp->value==3||tmp->value==4||tmp->value==7||tmp->value==8)
 		{
 			if(Player->x<tmp->x+tmp->translation&&tmp->x+tmp->translation<Player->x+0.6&& Player->y==tmp->y)
 			{
-				Player->vie-=1;
-				Player->y=24;
-				Player->x=12;
+				Player->alive=false;
 			}
 		}
 		if (mobShoot->size > 0)
@@ -140,9 +147,7 @@ void testCollision()
 			{
 				if(Player->x<tmp3->x+tmp3->translation&&tmp3->x+tmp3->translation<Player->x+0.6&& Player->y==tmp3->y)
 				{
-					Player->vie-=1;
-					Player->y=24;
-					Player->x=12;
+					Player->alive=false;
 					tmp3->alive=false;
 					struct mobile *mobShooter = mob->first;
             		while (mobShooter!=NULL) 
@@ -158,10 +163,6 @@ void testCollision()
 			}
 		}
 	tmp=tmp->next;
-	}
-	if(Player->vie==0)
-	{
-		Player->alive=false;
 	}
 }
 
@@ -228,7 +229,8 @@ void mouse(int bouton,int etat,int x,int y)
 							   }
 							   else if(x>230&&x<465&&y>265&&y<295)
 							   {
-								   menu=1; //lancer le jeu
+								   menu=4; //afficher le menu de saisie du nom
+								   inputName=true; //entrer son nom
 							   }
 							   else if(x>230&&x<465&&y>325&&y<355)
 							   {
@@ -246,6 +248,21 @@ void mouse(int bouton,int etat,int x,int y)
 									menu=0; //retour au menu principal
 								}
 							}
+							if(menu==2)
+							{
+								if(x>760&&x<900&&y>345&&y<360)
+								{
+									difficulty=1; //choix de la difficulté facile
+								}
+								else if(x>760&&x<915&&y>405&&y<425)
+								{
+									difficulty=2; //choix de la difficulté normale
+								}
+								else if(x>760&&x<990&&y>470&&y<485)
+								{
+									difficulty=3; //choix de la difficulté difficile
+								}
+							}
 							   printf("%4d %4d\n",x,y); 
                                glutPostRedisplay();
                                break ;
@@ -256,33 +273,59 @@ void mouse(int bouton,int etat,int x,int y)
 
 void Keyboard(unsigned char key, int x, int y)  // fonction allant gérer les input
 {
-	switch(key)
+	if(inputName==true)
 	{
-		case 27:
-			exit(0);
+		if(key=='\r'||key=='\n') //Gère la validation du nom en prenant en compte les systèmes windows qui utilisent "\r\n" et les systèmes linux qui utilisent "\n"
+		{
+			inputName=false;
+			Player->name[inputNameIndex]='\0'; //On met un caractère de fin de chaine à la fin du nom
+			menu=1;
+			startGame=time(NULL);
+		}
+		else if(key=='\b') //Gère la suppression d'un caractère
+		{
+			if(inputNameIndex>0)
+			{
+				inputNameIndex--;
+				Player->name[inputNameIndex]=' ';
+			}
+		}
+		else if(inputNameIndex<sizeof(Player->name)) //Gère l'ajout d'un caractère
+		{
+			Player->name[inputNameIndex]=key;
+			inputNameIndex++;
+		}
+	}
+	else
+	{
+		switch(key)
+		{
+			case 27:
+				exit(0);
 
-		case'z':
-			UP = true;
-			break;
+			case'z':
+				UP = true;
+				break;
 
-		case'q':
-			LEFT = true;
-			break;
+			case'q':
+				LEFT = true;
+				break;
 
-		case'd':
-			RIGHT = true;
-			break;
+			case'd':
+				RIGHT = true;
+				break;
 
-		case's':
-			DOWN = true;
-			break;
-		case'a':
-			FIRE = true;
-			break;
-		case'p':
-			PAUSE = !PAUSE;
-			break;
-	}	
+			case's':
+				DOWN = true;
+				break;
+			case'a':
+				FIRE = true;
+				break;
+			case'p':
+				PAUSE = !PAUSE;
+				break;
+		}
+	}
 }
 
 void game(char map[][NbCol]) //Fonction gérant toutes les mécaniques du jeu
@@ -332,12 +375,16 @@ void game(char map[][NbCol]) //Fonction gérant toutes les mécaniques du jeu
 			moveDown(map);		//va se déplacer vers la droite si on apppuie sur s
 			DOWN = false;
 		}
-		mobAutoShoot();			//les mobiles tirent sur le joueur
-		testCollision();		//test si le joueur est en collision avec un mobile
+		if(Player->alive==true)
+		{
+			mobAutoShoot();			//les mobiles tirent sur le joueur
+			testCollision();		//test si le joueur est en collision avec un mobile
+		}
 		testCollisionPShoot(); //test si un véhicule est en collision avec un projectile du joueur
 		popmChain(mob);			//supprime les mobiles qui sont morts
 		popmChain(mobShoot);	//supprime les projectiles qui sont morts
 		popmChain(playerShoot);//supprime les projectiles du joueur qui sont morts
+		death_animation();		//animation de mort
 		if(deadMob!=0)
 		{
 			if(deadMob==1||deadMob==2||deadMob==5||deadMob==6)
@@ -351,6 +398,7 @@ void game(char map[][NbCol]) //Fonction gérant toutes les mécaniques du jeu
 			
 			deadMob=0;
 		}
+		timeGame=(int)difftime(time(NULL),startGame); //temps de jeu écoule calculé en fonction de la différence entre le temps actuel et le temps de début de partie
 		glutPostRedisplay();
 	}
 	else

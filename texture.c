@@ -15,7 +15,7 @@ GLuint textureIds[NUM_TEXTURES];
 // Initialize and load the textures
 void initTextures()
 {
-    const char *textureFiles[NUM_TEXTURES] = {"concrete.bmp", "water.bmp","grass.bmp","wood.bmp","Hedgehog.left.png","Hedgehog.up.png","Hedgehog.down.png","Hedgehog.right.png","car1.png","car2.png","car3.png","car4.png","Background_start_menu.png","SettingBackground.png","BackgroundKeyFunc.png","metal.png","Hedgehog.dead.png"};
+    const char *textureFiles[NUM_TEXTURES] = {"concrete.bmp", "water.bmp","grass.bmp","wood.bmp","Hedgehog.left.png","Hedgehog.up.png","Hedgehog.down.png","Hedgehog.right.png","car1.png","car2.png","car3.png","car4.png","Background_start_menu.png","SettingBackground.png","BackgroundKeyFunc.png","BackgroundName.png","Hedgehog.dead.png"};
     for (int i = 0; i < NUM_TEXTURES; i++)
     {
     FREE_IMAGE_FORMAT format = FreeImage_GetFileType(textureFiles[i], 0);
