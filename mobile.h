@@ -1,6 +1,8 @@
 #ifndef _MOBILE_H_
 #define _MOBILE_H_
 
+#include <time.h>
+
 struct mobileChain
 {
     unsigned int size; //taille du tableau
@@ -17,6 +19,8 @@ struct mobile
     int angle; //angle de l'objet
     bool alive; //si l'objet est en vie ou non
     bool shoot; //si l'objet tir ou non
+    bool freeze; //si l'objet est gelé ou non
+    time_t freezeTimestamp; //timestamp de la dernière fois que l'objet a été gelé
     int shootAngle; //angle du tir
     struct mobile *next; //pointeur vers le prochain objet
     struct mobile *prev; //pointeur vers le précedent objet

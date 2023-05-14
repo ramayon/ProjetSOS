@@ -21,7 +21,7 @@ void moveLeft(char map[][NbCol])		//la fonction va vérifier si on peut se dépl
 	Mx = Player->x-1;
 	My = Player->y;
 	
-	if (map[Mx][My]!='#')
+	if (map[Mx][My]!='#'&&Mx>=0)
 	{
 		Player->x = Mx;
         Player->angle = 0;
@@ -35,7 +35,7 @@ void moveRight(char map[][NbCol])		//la fonction va vérifier si on peut se dép
 	Mx = Player->x+1;
 	My = Player->y;
 
-	if (map[Mx][My]!='#')
+	if (map[Mx][My]!='#'&&Mx<=25)
 	{
 		Player->x = Mx;
         Player->angle= 180;
@@ -49,7 +49,7 @@ void moveUp(char map[][NbCol])		//la fonction va vérifier si on peut se déplac
 	Mx = Player->x;
 	My = Player->y-1;
 
-	if (map[Mx][My]!='#')
+	if (map[Mx][My]!='#'&&My>=0)
 	{
 		Player->y = My;
         Player->angle = 90;
@@ -63,7 +63,7 @@ void moveDown(char map[][NbCol])	//la fonction va vérifier si on peut se dépla
 	Mx = Player->x;
 	My = Player->y+1;
 
-	if (map[Mx][My]!='#')
+	if (map[Mx][My]!='#'&&My<=25)
 	{
 		Player->y = My;
         Player->angle = 270;

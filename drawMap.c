@@ -19,6 +19,7 @@
 #include "hedgehog.h"
 #include "mobile.h"
 #include "texture.h"
+#include "missile.h"
 
 void tostring(char str[], int num)
 {
@@ -60,14 +61,45 @@ void timer(int)
 	if(PAUSE==false)
 	{
 		glutPostRedisplay();
-		glutTimerFunc(2400/60, timer, 0);
+		if(difficulty==1)
+		{
+			glutTimerFunc(2400/60, timer, 0);
+		}
+		else if(difficulty==2)
+		{
+			glutTimerFunc(1200/60, timer, 0);
+		}
+		else if(difficulty==3)
+		{
+			glutTimerFunc(600/60, timer, 0);
+		}
+		if(Missile->alive==true)
+		{
+			// Calculer la direction vers le joueur
+			float dx=Player->x-Missile->x;
+			float dy=Player->y-Missile->y;
+
+			// Calculer la distance vers le joueur
+			float distance=sqrt(dx*dx+dy*dy);
+
+			// Normaliser les vecteurs de direction
+			dx/=distance;
+			dy/=distance;
+
+			// Définir une certaine vitesse pour le missile
+			float speed=0.2;
+
+			// Mettre à jour la position du missile
+			Missile->x+=dx*speed;
+			Missile->y+=dy*speed;
+		}
 		if(mob!=NULL)
 		{
 			struct mobile *temp=mob->first;
 			while(temp!=NULL)
 			{
 				float *tp=&temp->translation;
-				if(temp->alive==true)
+				if(temp->alive==true&&temp->freeze==false)
 				{
 					if(temp->value==1||temp->value==2||temp->value==5||temp->value==6)
 					{
@@ -194,7 +226,14 @@ void drawShooting(struct mobile *temp, float translation)
         }
 
         glBegin(GL_LINES);
-        glColor3d(0.0, 0.0, 0.0); // Couleur des tirs noir
+		if(temp->value==13)
+		{
+			glColor3d(1.0, 0.0, 0.0); // Couleur des tirs orange
+		}
+        else
+		{
+			glColor3d(0.0, 0.0, 0.0); // Couleur des tirs noir
+		}
 
         if (temp->angle == 0)
         {
@@ -281,7 +320,15 @@ void drawMap(char map[][NbCol])			// fonction qui affiche TOUT
 		drawColoredSquare(6,10.5,6,1, 0,0,0.5,0.5); // Affiche le bouton "Parametres".
 		drawColoredSquare(6,12.5,6,1, 0,0,0.5,0.5); // Affiche le bouton "Touches de jeu".
 		drawColoredSquare(6,14.5,6,1, 0,0,0.5,0.5); // Affiche le bouton "Quitter".
+		drawColoredSquare(20,2.5,5,6.2, 0,0,0.5,0.5); // Affiche le cadre de score.
 		glColor3f(0.0, 0.0, 0.0);
+		    drawBitmapText("Meilleurs score:", 20.2, 3.2);
+			for(int i=0;i<5;i++)
+			{
+				char string[50];
+        		sprintf(string,"%d.%s: %d",i+1,top5[i].name,top5[i].score);
+				drawBitmapText(string, 20.2, 4.2+i);
+			}
 			drawBitmapText("Nouvelle partie", 7.2, 9.2);
 			drawBitmapText("Parametres", 7.6,11.2);
 			drawBitmapText("Touches de jeu", 7.2, 13.2);
@@ -295,8 +342,6 @@ void drawMap(char map[][NbCol])			// fonction qui affiche TOUT
 		{
 			int i, j;
 			// Commence l'affichage
-			// Bind the texture
-			glEnable(GL_TEXTURE_2D);
 			// Parcourt toutes les cellules de la matrice 
 			for(i=0; i<NbCol; i++)
 			for(j=0; j<NbLin; j++)
@@ -315,7 +360,6 @@ void drawMap(char map[][NbCol])			// fonction qui affiche TOUT
 				{   
 					drawObject(i,j,2,1,1,0);
 				}
-			glDisable(GL_TEXTURE_2D);
 			// Parcourt toutes les cellules de la matrice 
 			for(i=0; i<NbCol; i++)
 			for(j=0; j<NbLin; j++)
@@ -332,7 +376,12 @@ void drawMap(char map[][NbCol])			// fonction qui affiche TOUT
 				{   
 					drawColoredSquare(i,j,1,1,0,0.5,0.5,0.05); // Couleur brune des bords de map
 				}
-			// Achève l'affichage
+			struct mobile *temp3=bonusFruits->first;
+			while (temp3!=NULL)
+			{
+				drawObject(temp3->x,temp3->y,17,1,1,0);
+				temp3=temp3->next;
+			}
 			struct mobile *temp2=wood->first;
 			while (temp2!=NULL)
 			{
@@ -393,7 +442,10 @@ void drawMap(char map[][NbCol])			// fonction qui affiche TOUT
 				}
 				temp=temp->next;
 			}
-			//affichage playerShoot
+			if (Missile->alive) 
+			{
+        		drawObject(Missile->x, Missile->y, 18, 1, 1, 0);
+    		}
 			drawShooting(playerShoot->first, 0);
 			glColor3f(0.0, 0.0, 0.0);
 			char score[10];
@@ -432,22 +484,22 @@ void drawMap(char map[][NbCol])			// fonction qui affiche TOUT
 		glColor3f(0.0, 0.0, 0.0);
 			drawBitmapText("Difficulté actuelle :", 19.7, 8.7);
 			glColor3d(0.0, 1.0, 0.2);
-			drawBitmapText("Facile (vit. x1)", 19.7,11.7);
+			drawBitmapText("Facile (vitesse x1)", 19.7,11.7);
 			if(difficulty==1)
 			{
-				drawBitmapText("Facile (vit. x1)", 19.7,9.7);
+				drawBitmapText("Facile (vitesse x1)", 19.7,9.7);
 			}
 			glColor3d(0.0, 0.2, 1.0);
-			drawBitmapText("Normal (vit. x2)", 19.7, 13.7);
+			drawBitmapText("Normal (vitesse x2)", 19.7, 13.7);
 			if(difficulty==2)
 			{
-				drawBitmapText("Normal (vit. x2)", 19.7,9.7);
+				drawBitmapText("Normal (vitesse x2)", 19.7,9.7);
 			}
 			glColor3d(1.0, 0.0, 0.2);
-			drawBitmapText("Difficile (vit. & voit. x2)", 19.7, 15.7);
+			drawBitmapText("Difficile (vitesse x3)", 19.7, 15.7);
 			if(difficulty==3)
 			{
-				drawBitmapText("Difficile (vit. & voit. x2)", 19.7,9.7);
+				drawBitmapText("Difficile (vitesse x3)", 19.7,9.7);
 			}
 			glColor3d(0.0, 0.0, 0.0);
 			drawBitmapText("Retour au menu principal",2.3,23.7);

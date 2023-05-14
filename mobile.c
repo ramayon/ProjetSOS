@@ -36,6 +36,7 @@ void pushmChain(struct mobileChain *mob,int j, int k, int l,int m,int n)
     newMob->angle=m;
     newMob->alive=true;
     newMob->shoot=false;
+    newMob->freeze=false;
     newMob->shootAngle=n;
 	newMob->next=mob->first;
     newMob->prev=NULL;
@@ -90,12 +91,12 @@ int mobileElem(struct mobileChain *mob)
     {
         for(i=0;i<2;i++,k--,j++)
         {		
-            pushmChain(mob,j,k,24,0,0);
+            pushmChain(mob,j,k,25,0,0);
         }
         k--;
         for(i=0;i<2;i++,k--,j++)
         {
-            pushmChain(mob,j,k,1,0,0);
+            pushmChain(mob,j,k,0,0,0);
         }
         k--;
     }

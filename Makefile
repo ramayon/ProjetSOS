@@ -8,8 +8,8 @@ ifeq ($(UNAME_S),Darwin)
 FLAGGLUT=-Wno-deprecated-declarations -framework OpenGL -framework GLUT
 endif
 
-FLAG=-Wall -std=c99 -g
-SRCS=drawMap.c loadMap.c texture.c hedgehog.c mobile.c game.c main.c
+FLAG=-Wall -std=c99 -g -lm
+SRCS=drawMap.c loadMap.c leaderboard.c texture.c hedgehog.c mobile.c missile.c game.c main.c
 OBJET = $(SRCS:.c=.o)
 EXEC= program
 

@@ -16,13 +16,16 @@
 #include "game.h"
 #include "mobile.h"
 #include "texture.h"
+#include "missile.h"
 
 char map[NbLin][NbCol];
 player Player[1];
+missile Missile[1];
 struct mobileChain *mob;
 struct mobileChain *wood;
 struct mobileChain *mobShoot;
 struct mobileChain *playerShoot;
+struct mobileChain *bonusFruits;
 
 
 
